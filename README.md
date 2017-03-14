@@ -33,11 +33,20 @@ The following **additional** features are implemented:
 ## Wireframe of Petshop Checker
 https://app.moqups.com/kraftykit.inc@gmail.com/4apKfnB0Nb/view/page/a986dfda8
 
+<img src='http://imgur.com/vibhW1t.jpg' title='Menu' width='250px' alt='Menu' />
+<img src='http://imgur.com/Ladddvd.jpg' title='Privacy' width='250px' alt='Privacy' />
+<img src='http://imgur.com/EcSAywu.jpg' title='Shop List' width='250px' alt='Shop List' />
+<img src='http://imgur.com/BelAKa9.jpg' title='Shop Detail' width='250px' alt='Shop Detail' />
+<img src='http://imgur.com/WRenRFb.jpg' title='Click the Invalid Item' width='250px' alt='Click the Invalid Item' />
+<img src='http://imgur.com/sahWVWe.jpg' title='Confirm before Report' width='250px' alt='Confirm before Report' />
+<img src='http://imgur.com/Cqx7Hpt.jpg' title='Email Template' width='250px' alt='Email Template' />
+<img src='http://imgur.com/wsw6dqo.jpg' title='Email Report' width='250px' alt='Email Report' />
+
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/azbkbq4.gif' title='Video Walkthrough' width='300px' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
