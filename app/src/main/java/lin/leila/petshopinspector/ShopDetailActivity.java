@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 
 public class ShopDetailActivity extends AppCompatActivity {
 
-    public static final String EXTRA_NAME = "cheese_name";
+    public static final String EXTRA_NAME = "shop_name";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

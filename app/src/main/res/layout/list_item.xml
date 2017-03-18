@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
+    android:layout_marginBottom="@dimen/card_margin"
+    android:layout_marginLeft="@dimen/card_margin"
+    android:layout_marginRight="@dimen/card_margin"
     android:gravity="center_vertical"
     android:padding="10dp"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:layout_marginBottom="@dimen/card_margin"
-    android:layout_marginRight="@dimen/card_margin"
-    android:layout_marginLeft="@dimen/card_margin">
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,10 +26,9 @@
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_weight="0.01"
-            app:srcCompat="@drawable/ic_location"
             android:layout_gravity="center_vertical"
-            />
+            android:layout_weight="0.01"
+            app:srcCompat="@drawable/ic_location" />
 
         <LinearLayout
             android:layout_width="291dp"
@@ -44,19 +43,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvShopAddr"
                 android:layout_alignTop="@+id/avatar"
-                android:textAppearance="?attr/textAppearanceListItem"
-                tools:text="ShopName"
                 android:layout_gravity="center_vertical"
-                />
+                android:textAppearance="?attr/textAppearanceListItem"
+                tools:text="ShopName" />
 
             <TextView
                 android:id="@+id/tvShopAddr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                tools:text="Shop Address"
                 android:layout_gravity="center_vertical"
-                />
+                android:ellipsize="end"
+                tools:text="Shop Address" />
 
         </LinearLayout>
 
