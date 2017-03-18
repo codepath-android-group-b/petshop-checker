@@ -19,6 +19,8 @@ import java.util.List;
 
 import lin.leila.petshopinspector.models.PetShop;
 
+import static lin.leila.petshopinspector.models.PetShop.parseJson;
+
 /**
  * Created by javiosyc on 2017/3/16.
  */
@@ -111,7 +113,10 @@ public class AnimalDataUtils {
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                petShops.add(PetShop.parseJson(object));
+
+                PetShop petShop = PetShop.parseJson(object);
+
+                petShops.add(parseJson(object));
             }
 
         } catch (JSONException e) {

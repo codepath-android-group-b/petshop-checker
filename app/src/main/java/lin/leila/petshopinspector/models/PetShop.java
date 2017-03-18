@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 /**
  * Created by javiosyc on 2017/3/18.
  */
@@ -12,7 +13,6 @@ import org.json.JSONObject;
 public class PetShop implements Parcelable {
     private String city;
     private String district;
-    private String type;
     private String assistant;
     private String shopName;
     private String manager;
@@ -36,13 +36,6 @@ public class PetShop implements Parcelable {
         this.district = district;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getAssistant() {
         return assistant;
@@ -101,7 +94,6 @@ public class PetShop implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.city);
         dest.writeString(this.district);
-        dest.writeString(this.type);
         dest.writeString(this.assistant);
         dest.writeString(this.shopName);
         dest.writeString(this.manager);
@@ -116,7 +108,6 @@ public class PetShop implements Parcelable {
     protected PetShop(Parcel in) {
         this.city = in.readString();
         this.district = in.readString();
-        this.type = in.readString();
         this.assistant = in.readString();
         this.shopName = in.readString();
         this.manager = in.readString();
@@ -138,14 +129,13 @@ public class PetShop implements Parcelable {
     };
 
     /**
-     *
      * {"cert_no": "許可證號： 新北特寵業字第0471號 〈有效日期：2017-11-09〉", "assistant": "專任人員：李淑嫻", "shop_name": "頭等艙寵物生活館", "county": "台北縣", "manager": "李淑嫻", "address": "新北市新莊區建福路51號1樓", "services": "營業項目：買賣 寄養", "cert_grade": "評鑑等級： 民國 105 年評鑑 甲 等"},
      *
      * @param object
      * @return
      */
 
-    public static PetShop parseJson(JSONObject object)  {
+    public static PetShop parseJson(JSONObject object) {
 
         PetShop petShop = new PetShop();
 
@@ -159,6 +149,6 @@ public class PetShop implements Parcelable {
             e.printStackTrace();
         }
 
-        return  petShop;
+        return petShop;
     }
 }

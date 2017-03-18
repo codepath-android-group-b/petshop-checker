@@ -2,6 +2,7 @@ package lin.leila.petshopinspector.interfaces;
 
 import java.util.List;
 
+import lin.leila.petshopinspector.models.City;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PetShopQueryCondition;
 
@@ -11,4 +12,8 @@ import lin.leila.petshopinspector.models.PetShopQueryCondition;
 
 public interface PetShopInterface {
     public List<PetShop> getPetShop(PetShopQueryCondition condition);
+
+    public List<String> getType();
+
+    public List<City> getCity();
 }

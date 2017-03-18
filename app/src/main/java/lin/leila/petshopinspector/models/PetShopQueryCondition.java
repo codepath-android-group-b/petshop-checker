@@ -7,14 +7,15 @@ package lin.leila.petshopinspector.models;
 public class PetShopQueryCondition {
     private String city;
     private String district;
-    private String type;
+    private String service;
 
-    public PetShopQueryCondition() {}
+    public PetShopQueryCondition() {
+    }
 
-    public PetShopQueryCondition(String city, String district, String type) {
+    public PetShopQueryCondition(String city, String district, String service) {
         this.city = city;
         this.district = district;
-        this.type = type;
+        this.service = service;
     }
 
     public String getCity() {
@@ -33,11 +34,11 @@ public class PetShopQueryCondition {
         this.district = district;
     }
 
-    public String getType() {
-        return type;
+    public String getService() {
+        return service;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setService(String service) {
+        this.service = service;
     }
 }

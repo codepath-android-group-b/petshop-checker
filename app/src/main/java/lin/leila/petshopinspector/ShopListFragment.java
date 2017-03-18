@@ -7,9 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -19,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import lin.leila.petshopinspector.adapters.CityArrayAdapter;
+import lin.leila.petshopinspector.interfaces.PetShopInterface;
+import lin.leila.petshopinspector.models.City;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PetShopQueryCondition;
 
@@ -37,6 +42,15 @@ public class ShopListFragment extends Fragment {
     Spinner spZone;
     Spinner spItem;
 
+
+    private List<PetShop> petShops;
+
+    private List<City> cities;
+
+    private PetShopInterface petShopDb;
+
+    private SimpleStringRecyclerViewAdapter simpleStringRecyclerViewAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +64,13 @@ public class ShopListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        petShopDb = PetshopInspectorApplication.getPetShopDB();
+
+        petShops = new ArrayList<>();
+
+        cities = petShopDb.getCity();
+
+
         findView();
         init();
         spCity.setSelection(0);
@@ -58,9 +79,11 @@ public class ShopListFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
+        simpleStringRecyclerViewAdapter = new SimpleStringRecyclerViewAdapter(getActivity(),
+                petShops);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new SimpleStringRecyclerViewAdapter(getActivity(),
-                PetshopInspectorApplication.getPetShopDB().getPetShop(new PetShopQueryCondition())));
+        recyclerView.setAdapter(simpleStringRecyclerViewAdapter);
     }
 
     private List<String> getRandomSublist(String[] array, int amount) {
@@ -80,8 +103,39 @@ public class ShopListFragment extends Fragment {
     }
 
     private void init() {
-        adapterCity = ArrayAdapter.createFromResource(getContext(), R.array.filter_city, R.layout.filter_item);
+        adapterCity = new CityArrayAdapter(getContext(), cities);
         spCity.setAdapter(adapterCity);
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("DEBUG", position + "");
+
+                PetShopQueryCondition condition = new PetShopQueryCondition();
+
+                City city = cities.get(position);
+
+                condition.setCity(city.getName());
+
+                String dist = (String) spZone.getSelectedItem();
+
+                Log.d("DEBUG", "dist =" + dist);
+
+                condition.setService((String) spItem.getSelectedItem());
+
+                List<PetShop> shops = petShopDb.getPetShop(condition);
+                petShops.clear();
+                petShops.addAll(shops);
+                simpleStringRecyclerViewAdapter.notifyDataSetChanged();
+                ;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         adapterZone = ArrayAdapter.createFromResource(getContext(), R.array.filter_zone, R.layout.filter_item);
         spZone.setAdapter(adapterZone);
         adapterItem = ArrayAdapter.createFromResource(getContext(), R.array.filter_item, R.layout.filter_item);

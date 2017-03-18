@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
+import lin.leila.petshopinspector.models.City;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PetShopQueryCondition;
 import lin.leila.petshopinspector.utils.AnimalDataUtils;
+import lin.leila.petshopinspector.utils.LocationUtils;
 
 /**
  * Created by javiosyc on 2017/3/18.
@@ -52,9 +54,20 @@ public class PetShopDB implements PetShopInterface {
         return results;
     }
 
+    @Override
+    public List<String> getType() {
+
+        return null;
+    }
+
+    @Override
+    public List<City> getCity() {
+        return LocationUtils.getInstance().getCities();
+    }
+
     private boolean isSelectedAll(PetShopQueryCondition condition) {
 
-        return TextUtils.isEmpty(condition.getCity()) && TextUtils.isEmpty(condition.getDistrict()) && TextUtils.isEmpty(condition.getType());
+        return TextUtils.isEmpty(condition.getCity()) && TextUtils.isEmpty(condition.getDistrict()) && TextUtils.isEmpty(condition.getService());
     }
 
     private boolean isSelected(PetShop petShop, PetShopQueryCondition condition) {
@@ -62,11 +75,11 @@ public class PetShopDB implements PetShopInterface {
 
         String city = condition.getCity();
         String district = condition.getDistrict();
-        String type = condition.getType();
+        String service = condition.getService();
 
         if (isConditionEquals(petShop.getCity(), city)) {
             if (isConditionEquals(petShop.getDistrict(), district)) {
-                if (petShop.getType().indexOf(type) > 0) {
+                if (TextUtils.isEmpty(service) || petShop.getServices().indexOf(service) > 0) {
                     isSelected = true;
                 }
             }
