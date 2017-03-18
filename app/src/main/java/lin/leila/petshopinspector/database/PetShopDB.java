@@ -31,7 +31,6 @@ public class PetShopDB implements PetShopInterface {
             instance = new PetShopDB();
             petShopList = AnimalDataUtils.getPetShopFromFile(basePath);
         }
-
         return instance;
     }
 
