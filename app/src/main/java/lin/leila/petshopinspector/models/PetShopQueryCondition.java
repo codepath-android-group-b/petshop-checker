@@ -9,6 +9,14 @@ public class PetShopQueryCondition {
     private String district;
     private String type;
 
+    public PetShopQueryCondition() {}
+
+    public PetShopQueryCondition(String city, String district, String type) {
+        this.city = city;
+        this.district = district;
+        this.type = type;
+    }
+
     public String getCity() {
         return city;
     }

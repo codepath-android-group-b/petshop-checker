@@ -3,6 +3,8 @@ package lin.leila.petshopinspector.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * Created by javiosyc on 2017/3/18.
  */
@@ -134,4 +136,29 @@ public class PetShop implements Parcelable {
             return new PetShop[size];
         }
     };
+
+    /**
+     *
+     * {"cert_no": "許可證號： 新北特寵業字第0471號 〈有效日期：2017-11-09〉", "assistant": "專任人員：李淑嫻", "shop_name": "頭等艙寵物生活館", "county": "台北縣", "manager": "李淑嫻", "address": "新北市新莊區建福路51號1樓", "services": "營業項目：買賣 寄養", "cert_grade": "評鑑等級： 民國 105 年評鑑 甲 等"},
+     *
+     * @param object
+     * @return
+     */
+
+    public static PetShop parseJson(JSONObject object)  {
+
+        PetShop petShop = new PetShop();
+
+        try {
+            petShop.setAssistant(object.getString("assistant"));
+            petShop.setShopName(object.getString("shop_name"));
+            petShop.setCity(object.getString("county"));
+            petShop.setAddress(object.getString("address"));
+            petShop.setServices(object.getString("services"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return  petShop;
+    }
 }
