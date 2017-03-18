@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import lin.leila.petshopinspector.models.PetShop;
+import lin.leila.petshopinspector.models.PetShopQueryCondition;
+
 
 /**
  * Created by Leila on 2017/3/16.
@@ -56,19 +58,9 @@ public class ShopListFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        // DEBUG:fake_data
-        List<PetShop> listPetShop = new ArrayList<>();
-        PetShop p1 = new PetShop();
-        PetShop p2 = new PetShop();
-        p1.setShopName("aaa");
-        p2.setShopName("abb");
-        p1.setAddress("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        p2.setAddress("bbb");
-        listPetShop.add(p1);
-        listPetShop.add(p2);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(new SimpleStringRecyclerViewAdapter(getActivity(),
-                listPetShop));
+                PetshopInspectorApplication.getPetShopDB().getPetShop(new PetShopQueryCondition())));
     }
 
     private List<String> getRandomSublist(String[] array, int amount) {
@@ -101,7 +93,7 @@ public class ShopListFragment extends Fragment {
     public static class SimpleStringRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleStringRecyclerViewAdapter.ViewHolder> {
 
-//        private final TypedValue mTypedValue = new TypedValue();
+        //        private final TypedValue mTypedValue = new TypedValue();
 //        private int mBackground;
         private List<PetShop> mValues;
 
