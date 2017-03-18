@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerview"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlFilter"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:padding="10dp">
+
+        <Spinner
+            android:id="@+id/spCity"
+            style="@style/spinner_style"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:spinnerMode="dialog"/>
+
+        <Spinner
+            android:id="@+id/spZone"
+            style="@style/spinner_style"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/spCity"
+            android:spinnerMode="dialog"/>
+
+        <Spinner
+            android:id="@+id/spItem"
+            style="@style/spinner_style"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/spZone"
+            android:spinnerMode="dialog"/>
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/relativeLayout">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
