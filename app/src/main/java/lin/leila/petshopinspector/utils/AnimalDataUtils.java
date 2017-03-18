@@ -30,6 +30,6 @@ public class AnimalDataUtils {
 
 
     public static boolean isDataLoaded() {
-
+        return false;
     }
 }

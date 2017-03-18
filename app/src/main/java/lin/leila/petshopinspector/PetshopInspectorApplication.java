@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
+import lin.leila.petshopinspector.utils.AnimalDataUtils;
+
 /*
  * This is the Android application itself and is used to configure various settings
  * including the image cache in memory and on disk. This also adds a singleton
@@ -37,7 +39,7 @@ public class PetshopInspectorApplication extends Application {
             InputStream inputStream = null;
 
             try {
-                //  inputStream = AnimalDataUtils.getAnimalData(getAssets());
+                inputStream = AnimalDataUtils.getAnimalData(getAssets());
 
                 loadAnimalDataFromJson(inputStream, file);
 
