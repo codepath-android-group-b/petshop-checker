@@ -14,15 +14,15 @@ public class Shops {
         switch (RANDOM.nextInt(5)) {
             default:
             case 0:
-                return R.drawable.shop_1;
+                return R.drawable.ic_location;
             case 1:
-                return R.drawable.shop_2;
+                return R.drawable.ic_location;
             case 2:
-                return R.drawable.shop_3;
+                return R.drawable.ic_location;
             case 3:
-                return R.drawable.shop_4;
+                return R.drawable.ic_location;
             case 4:
-                return R.drawable.shop_5;
+                return R.drawable.ic_location;
         }
     }
 

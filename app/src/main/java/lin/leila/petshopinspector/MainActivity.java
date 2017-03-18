@@ -121,9 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ShopListFragment(), "Category 1");
-        adapter.addFragment(new ShopListFragment(), "Category 2");
-        adapter.addFragment(new ShopListFragment(), "Category 3");
+        adapter.addFragment(new ShopListFragment(), "Shop List");
+        adapter.addFragment(new ShopListFragment(), "MAP");
         viewPager.setAdapter(adapter);
     }
 
