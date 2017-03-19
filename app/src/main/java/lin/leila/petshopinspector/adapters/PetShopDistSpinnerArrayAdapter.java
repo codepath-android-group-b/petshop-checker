@@ -22,6 +22,11 @@ public class PetShopDistSpinnerArrayAdapter extends ArrayAdapter<District> {
     private List<District> petShopSpinners;
     private TextView tvCity;
 
+    private static class ViewHolder {
+        TextView tvFilterOpt;
+    }
+
+
     public PetShopDistSpinnerArrayAdapter(Context context, List<District> petShopSpinners) {
         super(context, android.R.layout.simple_list_item_1, petShopSpinners);
         this.context = context;
@@ -31,7 +36,7 @@ public class PetShopDistSpinnerArrayAdapter extends ArrayAdapter<District> {
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getDefaultView(position, convertView, parent, R.layout.spinner_city_item);
+        return getDefaultView(position, convertView, parent, R.layout.filter_item);
     }
 
     @Override
@@ -41,17 +46,29 @@ public class PetShopDistSpinnerArrayAdapter extends ArrayAdapter<District> {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getDefaultView(position, convertView, parent, R.layout.spinner_dropdown_city_item);
+        return getDefaultView(position, convertView, parent, R.layout.filter_item);
     }
 
     private View getDefaultView(int position, View convertView, ViewGroup parent, int resourceId) {
+        District district = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        ViewHolder viewHolder; // view lookup cache stored in tag
         if (convertView == null) {
+            // If there's no view to re-use, inflate a brand new view for row
+            viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(resourceId, parent, false);
-            tvCity = (TextView) convertView.findViewById(R.id.tvCity);
+            convertView = inflater.inflate(R.layout.filter_item, parent, false);
+            viewHolder.tvFilterOpt = (TextView) convertView.findViewById(R.id.tvFilterOpt);
+            // Cache the viewHolder object inside the fresh view
+            convertView.setTag(viewHolder);
+        } else {
+            // View is being recycled, retrieve the viewHolder object from tag
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        petShopSpinners.get(position);
-        tvCity.setText(petShopSpinners.get(position).getName());
+        // Populate the data from the data object via the viewHolder object
+        // into the template view.
+        viewHolder.tvFilterOpt.setText(district.getName());
+        // Return the completed view to render on screen
         return convertView;
     }
 }
