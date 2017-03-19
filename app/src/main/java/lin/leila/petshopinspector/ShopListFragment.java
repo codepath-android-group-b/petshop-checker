@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import lin.leila.petshopinspector.adapters.CityArrayAdapter;
+import lin.leila.petshopinspector.adapters.PetShopCitySpinnerArrayAdapter;
+import lin.leila.petshopinspector.adapters.PetShopDistSpinnerArrayAdapter;
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
 import lin.leila.petshopinspector.models.City;
+import lin.leila.petshopinspector.models.District;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PetShopQueryCondition;
 
@@ -35,7 +36,7 @@ import lin.leila.petshopinspector.models.PetShopQueryCondition;
 public class ShopListFragment extends Fragment {
 
     ArrayAdapter adapterCity;
-    ArrayAdapter adapterZone;
+    ArrayAdapter adapterDist;
     ArrayAdapter adapterItem;
     RecyclerView recyclerView;
     Spinner spCity;
@@ -46,6 +47,8 @@ public class ShopListFragment extends Fragment {
     private List<PetShop> petShops;
 
     private List<City> cities;
+
+    private List<District> districts;
 
     private PetShopInterface petShopDb;
 
@@ -63,13 +66,6 @@ public class ShopListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        petShopDb = PetshopInspectorApplication.getPetShopDB();
-
-        petShops = new ArrayList<>();
-
-        cities = petShopDb.getCity();
-
 
         findView();
         init();
@@ -103,30 +99,39 @@ public class ShopListFragment extends Fragment {
     }
 
     private void init() {
-        adapterCity = new CityArrayAdapter(getContext(), cities);
+        petShopDb = PetshopInspectorApplication.getPetShopDB();
+        petShops = new ArrayList<>();
+
+        initSpinnerData();
+
+        adapterCity = new PetShopCitySpinnerArrayAdapter(getContext(), cities);
         spCity.setAdapter(adapterCity);
+
+        adapterDist = new PetShopDistSpinnerArrayAdapter(getContext(), districts);
+        spZone.setAdapter(adapterDist);
+
+
         spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("DEBUG", position + "");
+
+                City city = (City) cities.get(position);
+                District dist = districts.get(0);
+                String service = (String) spItem.getSelectedItem();
+
+                changeDistOptions(city);
 
                 PetShopQueryCondition condition = new PetShopQueryCondition();
+                condition.setCity(city);
+                condition.setDistrict(dist);
+                condition.setService(service);
 
-                City city = cities.get(position);
-
-                condition.setCity(city.getName());
-
-                String dist = (String) spZone.getSelectedItem();
-
-                Log.d("DEBUG", "dist =" + dist);
-
+                spZone.setSelection(0);
                 condition.setService((String) spItem.getSelectedItem());
-
                 List<PetShop> shops = petShopDb.getPetShop(condition);
                 petShops.clear();
                 petShops.addAll(shops);
                 simpleStringRecyclerViewAdapter.notifyDataSetChanged();
-                ;
             }
 
             @Override
@@ -135,13 +140,59 @@ public class ShopListFragment extends Fragment {
             }
         });
 
+        spZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        adapterZone = ArrayAdapter.createFromResource(getContext(), R.array.filter_zone, R.layout.filter_item);
-        spZone.setAdapter(adapterZone);
+                City city = (City) spCity.getSelectedItem();
+                District dist = districts.get(position);
+                String service = (String) spItem.getSelectedItem();
+
+                PetShopQueryCondition condition = new PetShopQueryCondition();
+
+                condition.setCity(city);
+                condition.setDistrict(dist);
+                condition.setService(service);
+
+                List<PetShop> shops = petShopDb.getPetShop(condition);
+
+                petShops.clear();
+                petShops.addAll(shops);
+                simpleStringRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         adapterItem = ArrayAdapter.createFromResource(getContext(), R.array.filter_item, R.layout.filter_item);
         spItem.setAdapter(adapterItem);
 
         setupRecyclerView(recyclerView);
+    }
+
+    private void initSpinnerData() {
+        cities = new ArrayList<>();
+        List<City> allCities = petShopDb.getCity();
+        cities.add(getDefaultCityOption(allCities));
+        cities.addAll(allCities);
+
+        districts = new ArrayList<>();
+        districts.add(new District(getResources().getString(R.string.selected_all_dist), 0));
+    }
+
+    private City getDefaultCityOption(List<City> allCities) {
+        City defaultCity = new City();
+        defaultCity.setName(getResources().getString(R.string.selected_all_cities));
+
+        List<District> dist = new ArrayList<>();
+        for (City city : cities) {
+            dist.addAll(city.getDistrictList());
+        }
+        defaultCity.setDistrictList(dist);
+        return defaultCity;
     }
 
     public static class SimpleStringRecyclerViewAdapter
@@ -226,6 +277,20 @@ public class ShopListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mValues.size();
+        }
+    }
+
+    private void changeDistOptions(City city) {
+        resetDistOption();
+        if (city.getId() != 0) {
+            districts.addAll(city.getDistrictList());
+        }
+        adapterDist.notifyDataSetChanged();
+    }
+
+    private void resetDistOption() {
+        if (districts.size() > 1) {
+            districts.subList(1, districts.size()).clear();
         }
     }
 }

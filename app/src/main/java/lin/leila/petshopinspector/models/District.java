@@ -5,9 +5,9 @@ package lin.leila.petshopinspector.models;
  */
 public class District {
     private String name;
-    private String zip;
+    private int zip;
 
-    public District(String name, String zip) {
+    public District(String name, int zip) {
         this.name = name;
         this.zip = zip;
     }
@@ -20,11 +20,12 @@ public class District {
         this.name = name;
     }
 
-    public String getZip() {
+    public int getZip() {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(int zip) {
         this.zip = zip;
     }
+
 }

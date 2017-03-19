@@ -5,32 +5,32 @@ package lin.leila.petshopinspector.models;
  */
 
 public class PetShopQueryCondition {
-    private String city;
-    private String district;
+    private City city;
+    private District district;
     private String service;
 
     public PetShopQueryCondition() {
     }
 
-    public PetShopQueryCondition(String city, String district, String service) {
+    public PetShopQueryCondition(City city, District district, String service) {
         this.city = city;
         this.district = district;
         this.service = service;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getDistrict() {
+    public District getDistrict() {
         return district;
     }
 
-    public void setDistrict(String district) {
+    public void setDistrict(District district) {
         this.district = district;
     }
 

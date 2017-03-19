@@ -5,7 +5,6 @@ import android.util.Log;
 
 import lin.leila.petshopinspector.database.PetShopDB;
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
-import lin.leila.petshopinspector.models.PetShopQueryCondition;
 import lin.leila.petshopinspector.utils.AnimalDataUtils;
 
 /*
@@ -29,11 +28,7 @@ public class PetshopInspectorApplication extends Application {
             Log.d("DEBUG", "data is not loaded");
             AnimalDataUtils.copyAnimalDataFromAssets(getAssets(), getFilesDir().getPath());
         }
-
         db = PetShopDB.getInstance(getFilesDir().getPath());
-
-
-        Log.d("DEBUG", "size =" + db.getPetShop(new PetShopQueryCondition("", "", "")).size());
     }
     public static PetShopInterface getPetShopDB() {
         return db;

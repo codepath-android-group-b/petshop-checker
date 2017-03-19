@@ -69,7 +69,7 @@ public class AnimalDataUtils {
         }
     }
 
-    public static void copyAnimalDataFromAssets(AssetManager assets ,String path) {
+    public static void copyAnimalDataFromAssets(AssetManager assets, String path) {
         InputStream inputStream = null;
         try {
             inputStream = AnimalDataUtils.getAnimalData(assets);
@@ -113,9 +113,6 @@ public class AnimalDataUtils {
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-
-                PetShop petShop = PetShop.parseJson(object);
-
                 petShops.add(parseJson(object));
             }
 

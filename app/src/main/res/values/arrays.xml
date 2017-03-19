@@ -1,31 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="filter_city">
-        <item>城市</item>
-        <item>城市</item>
-        <item>城市</item>
-        <item>城市</item>
-        <item>城市</item>
-        <item>城市</item>
-        <item>城市</item>
-    </string-array>
-
-    <string-array name="filter_zone">
-        <item>區域</item>
-        <item>區域</item>
-        <item>區域</item>
-        <item>區域</item>
-        <item>區域</item>
-        <item>區域</item>
-        <item>區域</item>
-    </string-array>
-
     <string-array name="filter_item">
         <item>項目</item>
-        <item>項目</item>
-        <item>項目</item>
-        <item>項目</item>
-        <item>項目</item>
-        <item>項目</item>
+        <item>繁殖</item>
+        <item>買賣</item>
+        <item>寄養</item>
     </string-array>
 </resources>
