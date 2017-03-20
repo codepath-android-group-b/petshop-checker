@@ -158,7 +158,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         for(int i = 0; i < items.length; i++) {
             tvItems[i].setText(items[i]);
-            if (shopDetail.getServices().indexOf(items[i]) > 0) {
+            if (shopDetail.getServices().indexOf(items[i]) >= 0) {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_valid_item));
             } else {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_item));

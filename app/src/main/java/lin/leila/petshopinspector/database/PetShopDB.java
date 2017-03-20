@@ -105,7 +105,7 @@ public class PetShopDB implements PetShopInterface {
     }
 
     private boolean isSameService(PetShop petShop, String service) {
-        return service.equals("項目") || petShop.getServices().indexOf(service) > 0;
+        return service.equals("項目") || petShop.getServices().indexOf(service) >= 0;
     }
 
     private boolean isConditionEquals(String value, int condition) {
