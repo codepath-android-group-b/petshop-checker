@@ -30,4 +30,19 @@
         <item name="android:paddingBottom">2dp</item>
         <item name="android:popupBackground">#FFFFFFFF</item>
     </style>
+
+    <style name="ExpandedCollapsingToolbar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="item_style" parent="android:TextAppearance.Medium">
+        <item name="android:background">@drawable/round_corner_item</item>
+        <item name="android:textColor">@color/colorCommonText</item>
+        <item name="android:padding">@dimen/tv_detail_item_padding</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/tv_detail_item_w</item>
+        <item name="android:textAlignment">center</item>
+    </style>
 </resources>

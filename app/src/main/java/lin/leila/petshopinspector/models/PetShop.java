@@ -11,6 +11,17 @@ import org.json.JSONObject;
  */
 
 public class PetShop implements Parcelable {
+    public static final Creator<PetShop> CREATOR = new Creator<PetShop>() {
+        @Override
+        public PetShop createFromParcel(Parcel source) {
+            return new PetShop(source);
+        }
+
+        @Override
+        public PetShop[] newArray(int size) {
+            return new PetShop[size];
+        }
+    };
     private String city;
     private String district;
     private String assistant;
@@ -19,6 +30,67 @@ public class PetShop implements Parcelable {
     private String address;
     private String services;
     private String certGrade;
+    private String certDate;
+    private String certNo;
+
+    public PetShop() {
+    }
+
+    protected PetShop(Parcel in) {
+        this.city = in.readString();
+        this.district = in.readString();
+        this.assistant = in.readString();
+        this.shopName = in.readString();
+        this.manager = in.readString();
+        this.address = in.readString();
+        this.services = in.readString();
+        this.certGrade = in.readString();
+        this.certDate = in.readString();
+        this.certNo = in.readString();
+    }
+
+    /**
+     * {"cert_no": "新北特寵業字第0471號", "cert_date": "2017-11-09", "assistant": "專任人員：李淑嫻", "shop_name": "頭等艙寵物生活館", "county": "台北縣", "manager": "李淑嫻", "address": "新北市新莊區建福路51號1樓", "services": "買賣 寄養", "cert_grade": "105甲等"},
+     *
+     * @param object
+     * @return
+     */
+
+    public static PetShop parseJson(JSONObject object) {
+
+        PetShop petShop = new PetShop();
+
+        try {
+            petShop.setAssistant(object.getString("assistant"));
+            petShop.setShopName(object.getString("shop_name"));
+            petShop.setCity(object.getString("county"));
+            petShop.setAddress(object.getString("address"));
+            petShop.setServices(object.getString("services"));
+            petShop.setCertNo(object.getString("cert_no"));
+            petShop.setCertDate(object.getString("cert_date"));
+            petShop.setCertGrade(object.getString("cert_grade"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return petShop;
+    }
+
+    public String getCertDate() {
+        return certDate;
+    }
+
+    public void setCertDate(String certDate) {
+        this.certDate = certDate;
+    }
+
+    public String getCertNo() {
+        return certNo;
+    }
+
+    public void setCertNo(String certNo) {
+        this.certNo = certNo;
+    }
 
     public String getCity() {
         return city;
@@ -35,7 +107,6 @@ public class PetShop implements Parcelable {
     public void setDistrict(String district) {
         this.district = district;
     }
-
 
     public String getAssistant() {
         return assistant;
@@ -85,6 +156,8 @@ public class PetShop implements Parcelable {
         this.certGrade = certGrade;
     }
 
+    public int isValidItem(String chkItem) { return this.services.indexOf(chkItem); }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,55 +173,8 @@ public class PetShop implements Parcelable {
         dest.writeString(this.address);
         dest.writeString(this.services);
         dest.writeString(this.certGrade);
-    }
+        dest.writeString(this.certDate);
+        dest.writeString(this.certNo);
 
-    public PetShop() {
-    }
-
-    protected PetShop(Parcel in) {
-        this.city = in.readString();
-        this.district = in.readString();
-        this.assistant = in.readString();
-        this.shopName = in.readString();
-        this.manager = in.readString();
-        this.address = in.readString();
-        this.services = in.readString();
-        this.certGrade = in.readString();
-    }
-
-    public static final Creator<PetShop> CREATOR = new Creator<PetShop>() {
-        @Override
-        public PetShop createFromParcel(Parcel source) {
-            return new PetShop(source);
-        }
-
-        @Override
-        public PetShop[] newArray(int size) {
-            return new PetShop[size];
-        }
-    };
-
-    /**
-     * {"cert_no": "許可證號： 新北特寵業字第0471號 〈有效日期：2017-11-09〉", "assistant": "專任人員：李淑嫻", "shop_name": "頭等艙寵物生活館", "county": "台北縣", "manager": "李淑嫻", "address": "新北市新莊區建福路51號1樓", "services": "營業項目：買賣 寄養", "cert_grade": "評鑑等級： 民國 105 年評鑑 甲 等"},
-     *
-     * @param object
-     * @return
-     */
-
-    public static PetShop parseJson(JSONObject object) {
-
-        PetShop petShop = new PetShop();
-
-        try {
-            petShop.setAssistant(object.getString("assistant"));
-            petShop.setShopName(object.getString("shop_name"));
-            petShop.setCity(object.getString("county"));
-            petShop.setAddress(object.getString("address"));
-            petShop.setServices(object.getString("services"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return petShop;
     }
 }

@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -64,6 +65,16 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    TextView tvItem1;
+    TextView tvItem2;
+    TextView tvItem3;
+    TextView tvAddr;
+    TextView tvAssistant;
+    TextView tvGrade;
+    TextView tvValidDate;
+    TextView tvCertNo;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +95,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
 
-
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -96,6 +106,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+
+        findView();
+        init(shopDetail);
     }
 
     @Override
@@ -114,6 +127,43 @@ public class ShopDetailActivity extends AppCompatActivity implements
             mGoogleApiClient.disconnect();
         }
         super.onStop();
+    }
+
+    public void init(PetShop shopDetail) {
+
+        tvAddr.setText(shopDetail.getAddress());
+        tvAssistant.setText(shopDetail.getAssistant());
+        tvGrade.setText(shopDetail.getCertGrade());
+        tvValidDate.setText(shopDetail.getCertDate());
+        tvCertNo.setText(shopDetail.getCertNo());
+
+        ifItemExisted(shopDetail);
+
+    }
+
+    public void findView() {
+        tvItem1 = (TextView) findViewById(R.id.tvItem1);
+        tvItem2 = (TextView) findViewById(R.id.tvItem2);
+        tvItem3 = (TextView) findViewById(R.id.tvItem3);
+        tvAddr = (TextView) findViewById(R.id.tvAddr);
+        tvAssistant = (TextView) findViewById(R.id.tvAssistant);
+        tvGrade = (TextView) findViewById(R.id.tvGrade);
+        tvValidDate = (TextView) findViewById(R.id.tvValidDate);
+        tvCertNo = (TextView) findViewById(R.id.tvCertNo);
+    }
+
+    public void ifItemExisted(PetShop shopDetail) {
+        final String[] items = {"買賣","寄養","繁殖"};
+        TextView[] tvItems = {tvItem1, tvItem2, tvItem3};
+
+        for(int i = 0; i < items.length; i++) {
+            tvItems[i].setText(items[i]);
+            if (shopDetail.getServices().indexOf(items[i]) > 0) {
+                tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_valid_item));
+            } else {
+                tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_item));
+            }
+        }
     }
 
 
