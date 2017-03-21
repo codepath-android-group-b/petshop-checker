@@ -2,23 +2,17 @@ package lin.leila.petshopinspector;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
 
 import lin.leila.petshopinspector.models.PetShop;
 import permissions.dispatcher.NeedsPermission;
@@ -53,7 +42,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        GoogleMap.OnMapLongClickListener {
+        GoogleMap.OnMapLoadedCallback {
 
     public static final String EXTRA_NAME = "shop_name";
     private SupportMapFragment mapFragment;
@@ -65,6 +54,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    private PetShop shopDetail = new PetShop();
+
     TextView tvItem1;
     TextView tvItem2;
     TextView tvItem3;
@@ -74,14 +65,12 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvValidDate;
     TextView tvCertNo;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         Intent intent = getIntent();
-        final PetShop shopDetail = intent.getParcelableExtra(EXTRA_NAME);
+        shopDetail = intent.getParcelableExtra(EXTRA_NAME);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,18 +82,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
-        }
-
-        mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap map) {
-                    loadMap(map);
-                }
-            });
-        } else {
-            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
 
         findView();
@@ -129,13 +106,24 @@ public class ShopDetailActivity extends AppCompatActivity implements
         super.onStop();
     }
 
-    public void init(PetShop shopDetail) {
+    public void init(final PetShop shopDetail) {
 
         tvAddr.setText(shopDetail.getAddress());
         tvAssistant.setText(shopDetail.getAssistant());
         tvGrade.setText(shopDetail.getCertGrade());
         tvValidDate.setText(shopDetail.getCertDate());
         tvCertNo.setText(shopDetail.getCertNo());
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap map) {
+                    loadMap(map);
+                }
+            });
+        } else {
+            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+        }
 
         ifItemExisted(shopDetail);
 
@@ -150,6 +138,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade = (TextView) findViewById(R.id.tvGrade);
         tvValidDate = (TextView) findViewById(R.id.tvValidDate);
         tvCertNo = (TextView) findViewById(R.id.tvCertNo);
+        mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
     }
 
     public void ifItemExisted(PetShop shopDetail) {
@@ -158,7 +147,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         for(int i = 0; i < items.length; i++) {
             tvItems[i].setText(items[i]);
-            if (shopDetail.getServices().indexOf(items[i]) > 0) {
+            if (shopDetail.getServices().indexOf(items[i]) >= 0) {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_valid_item));
             } else {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_item));
@@ -173,57 +162,25 @@ public class ShopDetailActivity extends AppCompatActivity implements
             // Map is ready
             Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
-            map.setOnMapLongClickListener(this);
+            map.setOnMapLoadedCallback(this);
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onMapLongClick(LatLng point) {
-        Toast.makeText(getApplicationContext(), "Long Press", Toast.LENGTH_LONG).show();
-        // Custom code here...
-        showAlertDialogForPoint(point);
-    }
+    public void onMapLoaded() {
+        Log.d("###", String.valueOf(shopDetail.getLatitude()) + String.valueOf(shopDetail.getLongitude()));
 
+        LatLng shopLocation = new LatLng(shopDetail.getLatitude(), shopDetail.getLongitude());
 
-    private void showAlertDialogForPoint(final LatLng point) {
-        View messageView = LayoutInflater.from(ShopDetailActivity.this).
-                inflate(R.layout.message_item, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(messageView);
-
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String title = ((EditText) alertDialog.findViewById(R.id.etTitle)).
-                                getText().toString();
-                        String snippet = ((EditText) alertDialog.findViewById(R.id.etSnippet)).
-                                getText().toString();
-                        IconGenerator iconGenerator = new IconGenerator(ShopDetailActivity.this);
-                        iconGenerator.setStyle(IconGenerator.STYLE_PURPLE);
-                        Bitmap bitmap = iconGenerator.makeIcon(title);
-                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(bitmap);
-
-                        Marker marker = map.addMarker(new MarkerOptions()
-                                .position(point)
-                                .title(title)
-                                .snippet(snippet)
-                                .icon(icon));
-                    }
-                });
-
-        // Configure dialog button (Cancel)
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
-                });
-
-        // Display the dialog
-        alertDialog.show();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 17);
+        map.animateCamera(cameraUpdate);
+        MapUtils.addMarker(map,
+                shopLocation,
+                shopDetail.getShopName(),
+                "test",
+                MapUtils.createBubble(ShopDetailActivity.this, 6, shopDetail.getShopName()));
     }
 
     @Override
@@ -334,7 +291,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
     }
     @Override
     public void onConnectionSuspended(int i) {
