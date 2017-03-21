@@ -174,7 +174,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         LatLng shopLocation = new LatLng(shopDetail.getLatitude(), shopDetail.getLongitude());
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 17);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 15);
         map.animateCamera(cameraUpdate);
         MapUtils.addMarker(map,
                 shopLocation,
@@ -268,7 +268,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         if (location != null) {
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             map.animateCamera(cameraUpdate);
         } else {
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
