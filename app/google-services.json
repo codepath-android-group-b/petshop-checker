@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "353847676877",
+    "firebase_url": "https://petshop-checker-f1503.firebaseio.com",
+    "project_id": "petshop-checker-f1503",
+    "storage_bucket": "petshop-checker-f1503.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353847676877:android:32052ee848feda72",
+        "android_client_info": {
+          "package_name": "lin.leila.petshopinspector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353847676877-7j8t8o15ikh0hpg5dksnt34v5nk01g5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lin.leila.petshopinspector",
+            "certificate_hash": "8cd178c76dfbaeaef7fe9a2c5c6a4566c71aafe8"
+          }
+        },
+        {
+          "client_id": "353847676877-hfmo5b7utccb75voui119qfmjv4vmg19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4bplfchi1UHFvVqFILCsFVveEJ_zFrI4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353847676877-hfmo5b7utccb75voui119qfmjv4vmg19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
