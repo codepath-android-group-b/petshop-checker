@@ -18,6 +18,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import lin.leila.petshopinspector.models.City;
+import lin.leila.petshopinspector.models.District;
 import lin.leila.petshopinspector.models.PetShop;
 
 import static lin.leila.petshopinspector.models.PetShop.parseJson;
@@ -74,7 +76,7 @@ public class ExampleUnitTest {
     @Test
     public void test2() throws IOException {
 
-        List<String> locationString =   new ArrayList<>();
+        List<String> locationString = new ArrayList<>();
 
         String line;
 
@@ -124,5 +126,209 @@ public class ExampleUnitTest {
             throw new RuntimeException("Loading data have error!");
         }
         return text;
+    }
+
+
+    /*
+  cert_no	cert_date assistant		shop_name	county	manager	address	services	cert_grade	location
+   */
+    public JSONObject convertObjectToJson(PetShop petShop) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("cert_no", petShop.getCertNo());
+            object.put("cert_date", petShop.getCertDate());
+            object.put("cert_grade", petShop.getCertGrade());
+
+
+            object.put("assistant", petShop.getAssistant().replace("專任人員：", ""));
+            object.put("shop_name", petShop.getShopName());
+
+            String address = petShop.getAddress();
+            String city = petShop.getCity();
+            String district = parseDistrict(city, address);
+            object.put("city", city);
+            object.put("district", district);
+            object.put("address", petShop.getAddress());
+
+            String serviceString = petShop.getServices();
+
+            object.put("services", parseServieObjectFrom(serviceString));
+
+            object.put("latitude", petShop.getLatitude());
+            object.put("longitude", petShop.getLongitude());
+            object.put("manager",petShop.getManager());
+
+        } catch (JSONException e) {
+            throw new RuntimeException("convert error");
+        }
+        return object;
+    }
+
+
+    @Test
+    public void testJson() {
+        StringBuilder text = getJsonString();
+        List<PetShop> petShops = new ArrayList<>();
+
+        try {
+            JSONArray array = new JSONArray(text.toString());
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+                petShops.add(parseJson(object));
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException("parse data error");
+        }
+
+        JSONArray results = new JSONArray();
+
+
+        for (PetShop petShop : petShops) {
+            JSONObject object = convertObjectToJson(petShop);
+            results.put(object);
+        }
+
+        writeJsonToFile(results);
+    }
+
+    public void writeJsonToFile(JSONArray array) {
+
+        FileWriter file = null;
+        try {
+            file = new FileWriter("newJson.json");
+            file.write(array.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                file.flush();
+                file.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    private JSONArray parseServieObjectFrom(String serviceString) {
+        String[] services = serviceString.split(" ");
+        if (services.length <= 0) {
+            throw new RuntimeException("parse Service error!");
+        }
+        JSONArray array = new JSONArray();
+
+        for (String service : services) {
+            array.put(service);
+        }
+        return array;
+    }
+
+    private String parseDistrict(String cityName, String address) {
+
+        System.out.println(cityName + "[" + address + "]");
+
+        if (address.equals("0903331309, 0952858002") || address.equals("0988822771")) {
+            return "";
+        }
+
+        if (address.startsWith("嘉義市"))
+            return "";
+
+        if (address.startsWith("基市")) {
+            address = address.replace("基市", "基隆市");
+        }
+
+
+        if (isEmpty(address) || isEmpty(cityName)) {
+            throw new RuntimeException("can't find district");
+        }
+
+
+        cityName = cityName.replace("台", "臺");
+
+        address = address.replace("台", "臺");
+
+
+        List<City> cities = LocationUtils.getInstance().getCities();
+
+        for (City city : cities) {
+            String cityName2 = city.getName().replace("台", "臺");
+
+
+            if (cityName.equals("新竹市")) {
+                return "";
+            }
+
+            if (cityName2.equals(cityName)) {
+                address = address.replaceAll("\\d+", "");
+                address = address.trim();
+
+                if (address.equals("基隆市愛一路號樓")) {
+                    address = "基隆市仁愛區愛一路號樓";
+                }
+
+                if (address.equals("基隆市信一路號樓")) {
+                    address = "基隆市信義區信一路號樓";
+                }
+
+                if (address.equals("基隆市安一路巷號樓")) {
+                    address = "基隆市安樂區安一路巷號樓";
+                }
+
+                if (address.equals("基隆市北寧路巷、號")) {
+                    address = "基隆市中正區北寧路巷、號";
+                }
+
+                for (District district : city.getDistrictList()) {
+                    String districtName = district.getName();
+
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+
+                    districtName = districtName.replaceAll("區", "市");
+
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+
+
+                    districtName = districtName.replaceAll("區", "鎮");
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+
+
+                    address = address.replace("桃園縣", "桃園市");
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+
+                    address = address.replace("嘉義市", "嘉義縣");
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+
+                    address = address.replace("雲林市", "雲林縣");
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+                    address = address.replace("金門市", "金門縣");
+                    if (address.indexOf(cityName + districtName) >= 0 || address.startsWith(districtName)) {
+                        return districtName;
+                    }
+                }
+                throw new RuntimeException("2district is not found " + cityName + " [" + city.getName() + "]?" + address);
+            }
+        }
+        throw new RuntimeException("3district is not found!" + cityName + " " + address);
+    }
+
+    public boolean isEmpty(String message) {
+
+        return message == null || message.equals("");
     }
 }
