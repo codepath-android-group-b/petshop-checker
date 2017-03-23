@@ -24,4 +24,11 @@
     <string name="selected_all_dist">區域</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_api_key">AIzaSyCUvMuiKehxYGpmKyrLSQVDQP0IX_2iU9U</string>
+
+    <array name="filter_item_test">
+        <item>項目</item>
+        <item>繁殖</item>
+        <item>買賣</item>
+        <item>寄養</item>
+    </array>
 </resources>

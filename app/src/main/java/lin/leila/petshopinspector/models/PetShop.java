@@ -3,7 +3,6 @@ package lin.leila.petshopinspector.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,6 @@ public class PetShop implements Parcelable {
             return new PetShop[size];
         }
     };
-    private String certNo;
     private String city;
     private String district;
     private String assistant;
@@ -33,14 +31,12 @@ public class PetShop implements Parcelable {
     private String services;
     private String certGrade;
     private String certDate;
-    private double latitude;
-    private double longitude;
+    private String certNo;
 
     public PetShop() {
     }
 
     protected PetShop(Parcel in) {
-        this.certNo = in.readString();
         this.city = in.readString();
         this.district = in.readString();
         this.assistant = in.readString();
@@ -50,40 +46,29 @@ public class PetShop implements Parcelable {
         this.services = in.readString();
         this.certGrade = in.readString();
         this.certDate = in.readString();
-        this.latitude = in.readDouble();
-        this.longitude = in.readDouble();
+        this.certNo = in.readString();
     }
+
+    /**
+     * {"cert_no": "新北特寵業字第0471號", "cert_date": "2017-11-09", "assistant": "專任人員：李淑嫻", "shop_name": "頭等艙寵物生活館", "county": "台北縣", "manager": "李淑嫻", "address": "新北市新莊區建福路51號1樓", "services": "買賣 寄養", "cert_grade": "105甲等"},
+     *
+     * @param object
+     * @return
+     */
 
     public static PetShop parseJson(JSONObject object) {
 
         PetShop petShop = new PetShop();
 
         try {
-            petShop.setCertGrade(object.getString("cert_grade"));
-            petShop.setCertNo(object.getString("cert_no"));
-            petShop.setAddress(object.getString("address"));
-            petShop.setManager(object.getString("manager"));
-
-            petShop.setCity(object.getString("city"));
-            petShop.setCertDate(object.getString("cert_date"));
             petShop.setAssistant(object.getString("assistant"));
-
-            petShop.setDistrict(object.getString("district"));
-            petShop.setLatitude(object.getDouble("latitude"));
-
-
-            JSONArray services = object.getJSONArray("services");
-
-            StringBuilder serviceBuilder = new StringBuilder();
-            for (int i = 0; i < services.length(); i++) {
-                serviceBuilder.append(services.get(i).toString() + " ");
-            }
-
-            petShop.setServices(serviceBuilder.toString());
-
             petShop.setShopName(object.getString("shop_name"));
-            petShop.setLongitude(object.getDouble("longitude"));
-
+            petShop.setCity(object.getString("county"));
+            petShop.setAddress(object.getString("address"));
+            petShop.setServices(object.getString("services"));
+            petShop.setCertNo(object.getString("cert_no"));
+            petShop.setCertDate(object.getString("cert_date"));
+            petShop.setCertGrade(object.getString("cert_grade"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -91,20 +76,20 @@ public class PetShop implements Parcelable {
         return petShop;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public String getCertDate() {
+        return certDate;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCertDate(String certDate) {
+        this.certDate = certDate;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public String getCertNo() {
+        return certNo;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setCertNo(String certNo) {
+        this.certNo = certNo;
     }
 
     public String getCity() {
@@ -171,21 +156,7 @@ public class PetShop implements Parcelable {
         this.certGrade = certGrade;
     }
 
-    public String getCertDate() {
-        return certDate;
-    }
-
-    public void setCertDate(String certDate) {
-        this.certDate = certDate;
-    }
-
-    public String getCertNo() {
-        return certNo;
-    }
-
-    public void setCertNo(String certNo) {
-        this.certNo = certNo;
-    }
+    public int isValidItem(String chkItem) { return this.services.indexOf(chkItem); }
 
     @Override
     public int describeContents() {
@@ -194,7 +165,6 @@ public class PetShop implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.certNo);
         dest.writeString(this.city);
         dest.writeString(this.district);
         dest.writeString(this.assistant);
@@ -204,7 +174,7 @@ public class PetShop implements Parcelable {
         dest.writeString(this.services);
         dest.writeString(this.certGrade);
         dest.writeString(this.certDate);
-        dest.writeDouble(this.latitude);
-        dest.writeDouble(this.longitude);
+        dest.writeString(this.certNo);
+
     }
 }

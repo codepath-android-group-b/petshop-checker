@@ -1,7 +1,6 @@
 package lin.leila.petshopinspector.database;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import lin.leila.petshopinspector.utils.LocationUtils;
  */
 
 public class PetShopDB implements PetShopInterface {
-    private static final int ALL_OPTION_ID = 0;
+    private static final int ALL_CITIY_OPTION_ID = 0;
     private static List<PetShop> petShopList;
 
     private static PetShopDB instance;
@@ -40,8 +39,6 @@ public class PetShopDB implements PetShopInterface {
 
     @Override
     public List<PetShop> getPetShop(PetShopQueryCondition condition) {
-        Log.d("DEBUG", "getPetShop condition" +  condition);
-
         List<PetShop> results = new ArrayList<>();
         if (petShopList == null)
             return results;
@@ -55,8 +52,6 @@ public class PetShopDB implements PetShopInterface {
                 results.add(petShop);
             }
         }
-
-        Log.d("DEBUG", "count:" +  results.size());
         return results;
     }
 
@@ -76,25 +71,44 @@ public class PetShopDB implements PetShopInterface {
     }
 
     private boolean isSelected(PetShop petShop, PetShopQueryCondition condition) {
-        return checkCity(petShop, condition) && checkDistrict(petShop, condition) && checkService(petShop, condition);
-    }
+        boolean isSelected = false;
 
-    private boolean checkService(PetShop petShop, PetShopQueryCondition condition) {
-        return condition.getService().equals("項目") || petShop.getServices().indexOf(condition.getService()) >= 0;
-    }
+        String service = condition.getService();
 
-    private boolean checkDistrict(PetShop petShop, PetShopQueryCondition condition) {
-        if (ALL_OPTION_ID == condition.getDistrict().getZip()) {
-            return true;
-        }
-        return petShop.getDistrict().equals(condition.getDistrict().getName());
-    }
+        boolean isSameService = isSameService(petShop, service);
 
-    private boolean checkCity(PetShop petShop, PetShopQueryCondition condition) {
-        if (ALL_OPTION_ID == condition.getCity().getId()) {
-            return true;
+        if (condition.getCity().getId() == ALL_CITIY_OPTION_ID) {
+            if (isSameService)
+                return true;
         }
 
-        return petShop.getCity().equals(condition.getCity().getName());
+        String cityName = condition.getCity().getName();
+
+        boolean isSameCity = petShop.getCity().equals(cityName);
+
+        if (isSameCity && condition.getDistrict().getZip() == 0) {
+            if (isSameService)
+                return true;
+        }
+
+        String districtName = condition.getDistrict().getName();
+
+        boolean isSameDist = petShop.getAddress().indexOf(districtName) >= 0;
+
+        if (isSameCity && isSameDist) {
+            if (isSameService) {
+                isSelected = true;
+            }
+        }
+
+        return isSelected;
+    }
+
+    private boolean isSameService(PetShop petShop, String service) {
+        return service.equals("項目") || petShop.getServices().indexOf(service) > 0;
+    }
+
+    private boolean isConditionEquals(String value, int condition) {
+        return value.equals(condition);
     }
 }

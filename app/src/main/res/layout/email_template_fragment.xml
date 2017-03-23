@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <CheckBox
+        android:id="@+id/showPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="無照繁殖"
+        android:textColor="#000000" />
+    <CheckBox
+        android:id="@+id/showPassword2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="無照販賣"
+        android:textColor="#000000" />
+    <CheckBox
+        android:id="@+id/showPassword3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="無照寄養"
+        android:textColor="#000000" />
+    <CheckBox
+        android:id="@+id/showPassword4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="環境不佳"
+        android:textColor="#000000" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="其他原因，請註明"
+        android:textColor="#80000000" />
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="316dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="text"
+        android:textColor="#000000" />
+
+</LinearLayout>

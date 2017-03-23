@@ -41,13 +41,4 @@ public class PetShopQueryCondition {
     public void setService(String service) {
         this.service = service;
     }
-
-    @Override
-    public String toString() {
-        return "PetShopQueryCondition{" +
-                "city=" + city.getName() +
-                ", district=" + district.getName() +
-                ", service='" + service + '\'' +
-                '}';
-    }
 }

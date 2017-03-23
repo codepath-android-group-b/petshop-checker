@@ -6,4 +6,7 @@
         <item>買賣</item>
         <item>寄養</item>
     </string-array>
+    <string-array name="test_email">
+        <item>testA</item>
+    </string-array>
 </resources>
