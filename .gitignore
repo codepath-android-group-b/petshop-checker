@@ -1,3 +1,5 @@
+# MAC related
+*.DS_STORE
 # Built application files
 *.apk
 *.ap_

@@ -2,20 +2,29 @@ package lin.leila.petshopinspector;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +38,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -65,6 +75,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvValidDate;
     TextView tvCertNo;
 
+    private EmailAddress emailAddress= new EmailAddress();
+    EditText passwordInput;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +99,14 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         findView();
         init(shopDetail);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                EmailDialog();
+            }
+        });
     }
 
     @Override
@@ -352,5 +373,90 @@ public class ShopDetailActivity extends AppCompatActivity implements
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
+    }
+
+    public void EmailDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(ShopDetailActivity.this)
+                .customView(R.layout.email_template_fragment, true)
+                .title("檢舉 " + shopDetail.getShopName())
+                .positiveText("Email")
+                .negativeText("Cancel")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        View positive = dialog.getActionButton(DialogAction.POSITIVE);
+                        passwordInput = (EditText) dialog.getCustomView().findViewById(R.id.password);
+                        CheckBox checkbox = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword);
+                        CheckBox checkbox2 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword2);
+                        CheckBox checkbox3 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword3);
+                        CheckBox checkbox4 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword4);
+
+                        String emailtitle = "檢舉 " + shopDetail.getShopName();
+                        String emailsubject = new String();
+                        //save input
+                        emailsubject = "敬啟者，\r\n" + "本人於行經" + shopDetail.getAddress() +
+                                "，發現" + shopDetail.getShopName() + "有違法情事：\r\n"
+                                + passwordInput.getText().toString() + "\r\n";
+                        if (checkbox.isChecked()) {
+                            emailsubject = emailsubject + checkbox.getText().toString() + "\r\n";
+                        }
+                        if (checkbox2.isChecked()) {
+                            emailsubject = emailsubject + checkbox2.getText().toString() + "\r\n";
+                        }
+                        if (checkbox3.isChecked()) {
+                            emailsubject = emailsubject + checkbox3.getText().toString() + "\r\n";
+                        }
+                        if (checkbox4.isChecked()) {
+                            emailsubject = emailsubject + checkbox4.getText().toString() + "\r\n";
+                        }
+
+                        emailsubject = emailsubject + "\r\n該店寵物登記資料如下：\r\n" +
+                                "日期：" + shopDetail.getCertDate() + "\r\n" +
+                                "等級：" + shopDetail.getCertGrade() + "\r\n" +
+                                "證號：" + shopDetail.getCertNo() + "\r\n" +
+                                "登記項目" + shopDetail.getServices() + "\r\n" + "\r\n盼貴單位能妥善處理，並公布或回覆，謝謝。";
+
+                        String emailaddress = emailAddress.getEmailAddress(shopDetail.getCity());
+                        if (emailaddress == null) {
+                            emailaddress = "test@gmail.com";
+                        }
+
+                        String uriText = "mailto:" + emailaddress +
+                                "?subject=" + Uri.encode(emailtitle) +
+                                "&body=" + Uri.encode(emailsubject);
+
+                        Uri uri = Uri.parse(uriText);
+
+                        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                        sendIntent.setData(uri);
+
+                        startActivity(Intent.createChooser(sendIntent, "Please attach image/video in email"));
+
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                })
+                .showListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                    }
+                })
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                    }
+                })
+                .show();
+
     }
 }
