@@ -115,23 +115,15 @@ public class ShopListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                City city = (City) cities.get(position);
+                City city = cities.get(position);
+
                 District dist = districts.get(0);
+                changeDistOptions(city);
+                spZone.setSelection(0);
+
                 String service = (String) spItem.getSelectedItem();
 
-                changeDistOptions(city);
-
-                PetShopQueryCondition condition = new PetShopQueryCondition();
-                condition.setCity(city);
-                condition.setDistrict(dist);
-                condition.setService(service);
-
-                spZone.setSelection(0);
-                condition.setService((String) spItem.getSelectedItem());
-                List<PetShop> shops = petShopDb.getPetShop(condition);
-                petShops.clear();
-                petShops.addAll(shops);
-                simpleStringRecyclerViewAdapter.notifyDataSetChanged();
+                filterShopByCondition(city, dist, service);
             }
 
             @Override
@@ -145,20 +137,12 @@ public class ShopListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 City city = (City) spCity.getSelectedItem();
+
                 District dist = districts.get(position);
+
                 String service = (String) spItem.getSelectedItem();
 
-                PetShopQueryCondition condition = new PetShopQueryCondition();
-
-                condition.setCity(city);
-                condition.setDistrict(dist);
-                condition.setService(service);
-
-                List<PetShop> shops = petShopDb.getPetShop(condition);
-
-                petShops.clear();
-                petShops.addAll(shops);
-                simpleStringRecyclerViewAdapter.notifyDataSetChanged();
+                filterShopByCondition(city, dist, service);
             }
 
             @Override
@@ -170,7 +154,37 @@ public class ShopListFragment extends Fragment {
         adapterItem = ArrayAdapter.createFromResource(getContext(), R.array.filter_item, R.layout.filter_item);
         spItem.setAdapter(adapterItem);
 
+        spItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                City city = (City) spCity.getSelectedItem();
+                District dist = (District) spZone.getSelectedItem();
+                String service = (String) spItem.getSelectedItem();
+
+                filterShopByCondition(city, dist, service);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         setupRecyclerView(recyclerView);
+    }
+
+    private void filterShopByCondition(City city, District dist, String service) {
+        PetShopQueryCondition condition = new PetShopQueryCondition();
+        condition.setCity(city);
+        condition.setDistrict(dist);
+        condition.setService(service);
+
+        condition.setService((String) spItem.getSelectedItem());
+        List<PetShop> shops = petShopDb.getPetShop(condition);
+        petShops.clear();
+        petShops.addAll(shops);
+        simpleStringRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void initSpinnerData() {
