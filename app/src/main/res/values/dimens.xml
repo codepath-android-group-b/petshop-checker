@@ -13,5 +13,7 @@
     <dimen name="list_item_height">100dp</dimen>
     <dimen name="tv_detail_item_padding">8dp</dimen>
     <dimen name="tv_detail_item_w">100dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

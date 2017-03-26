@@ -212,8 +212,6 @@ public class ShopListFragment extends Fragment {
     public static class SimpleStringRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleStringRecyclerViewAdapter.ViewHolder> {
 
-        //        private final TypedValue mTypedValue = new TypedValue();
-//        private int mBackground;
         private List<PetShop> mValues;
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -231,20 +229,9 @@ public class ShopListFragment extends Fragment {
                 mTvShopName = (TextView) view.findViewById(R.id.tvShopName);
                 mTvShopAddr = (TextView) view.findViewById(R.id.tvShopAddr);
             }
-//
-//            @Override
-//            public String toString() {
-//                return super.toString() + " '" + mTvShopName.getText();
-//            }
         }
-//
-//        public String getValueAt(int position) {
-//            return mValues.get(position);
-//        }
 
         public SimpleStringRecyclerViewAdapter(Context context, List<PetShop> items) {
-//            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-//            mBackground = mTypedValue.resourceId;
             mValues = items;
         }
 

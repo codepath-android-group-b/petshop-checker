@@ -1,5 +1,6 @@
 package lin.leila.petshopinspector;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +23,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +70,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     private PetShop shopDetail = new PetShop();
 
+    CoordinatorLayout coordinatorLayout;
     TextView tvItem1;
     TextView tvItem2;
     TextView tvItem3;
@@ -74,9 +79,11 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvGrade;
     TextView tvValidDate;
     TextView tvCertNo;
+    ProgressBar progressBar;
 
     private EmailAddress emailAddress= new EmailAddress();
     EditText passwordInput;
+    FloatingActionButton fab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +92,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         shopDetail = intent.getParcelableExtra(EXTRA_NAME);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -100,13 +107,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
         findView();
         init(shopDetail);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                EmailDialog();
-            }
-        });
     }
 
     @Override
@@ -134,6 +134,12 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade.setText(shopDetail.getCertGrade());
         tvValidDate.setText(shopDetail.getCertDate());
         tvCertNo.setText(shopDetail.getCertNo());
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                EmailDialog();
+            }
+        });
 
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -151,6 +157,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     }
 
     public void findView() {
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
         tvItem1 = (TextView) findViewById(R.id.tvItem1);
         tvItem2 = (TextView) findViewById(R.id.tvItem2);
         tvItem3 = (TextView) findViewById(R.id.tvItem3);
@@ -159,7 +166,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade = (TextView) findViewById(R.id.tvGrade);
         tvValidDate = (TextView) findViewById(R.id.tvValidDate);
         tvCertNo = (TextView) findViewById(R.id.tvCertNo);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
     }
 
     public void ifItemExisted(PetShop shopDetail) {
@@ -181,17 +190,18 @@ public class ShopDetailActivity extends AppCompatActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
         } else {
-            Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onMapLoaded() {
-        Log.d("###", String.valueOf(shopDetail.getLatitude()) + String.valueOf(shopDetail.getLongitude()));
+        progressBar.setVisibility(View.GONE);
+//        Log.d("###", String.valueOf(shopDetail.getLatitude()) + String.valueOf(shopDetail.getLongitude()));
 
         LatLng shopLocation = new LatLng(shopDetail.getLatitude(), shopDetail.getLongitude());
 
@@ -206,8 +216,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sample_actions, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -287,12 +296,14 @@ public class ShopDetailActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout,
+                    "GPS location was found!", Snackbar.LENGTH_LONG).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             map.animateCamera(cameraUpdate);
         } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout,
+                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
         }
         startLocationUpdates();
     }
@@ -316,9 +327,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout, "Disconnected. Please re-connect.", Snackbar.LENGTH_LONG).show();
         } else if (i == CAUSE_NETWORK_LOST) {
-            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Snackbar.make(coordinatorLayout, "Network lost. Please re-connect.", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -346,8 +357,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getApplicationContext(),
-                    "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout,
+                    "Sorry. Location services not available to you", Snackbar.LENGTH_LONG).show();
         }
     }
 
