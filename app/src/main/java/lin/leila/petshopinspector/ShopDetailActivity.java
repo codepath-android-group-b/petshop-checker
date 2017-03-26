@@ -71,6 +71,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
     private PetShop shopDetail = new PetShop();
 
     CoordinatorLayout coordinatorLayout;
+    CollapsingToolbarLayout collapsingToolbar;
+    Toolbar toolbar;
     TextView tvItem1;
     TextView tvItem2;
     TextView tvItem3;
@@ -92,11 +94,10 @@ public class ShopDetailActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         shopDetail = intent.getParcelableExtra(EXTRA_NAME);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        CollapsingToolbarLayout collapsingToolbar =
+        collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(shopDetail.getShopName());
 
@@ -180,7 +181,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
             if (shopDetail.getServices().indexOf(items[i]) >= 0) {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_valid_item));
             } else {
-                tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_item));
+                tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_item_invalid));
+                tvItems[i].setTextColor(getResources().getColor(R.color.colorTextInvalid));
             }
         }
     }

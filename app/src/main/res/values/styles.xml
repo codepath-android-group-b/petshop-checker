@@ -1,15 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
-
-    <!--<style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo"></style>-->
-
-    <!--<style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.DayNight.NoActionBar">-->
-        <!--<item name="colorPrimary">#673AB7</item>-->
-        <!--<item name="colorPrimaryDark">#512DA8</item>-->
-        <!--<item name="colorAccent">#FF4081</item>-->
-    <!--</style>-->
-
     <style name="Theme.PSI.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.PSI.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -19,7 +9,6 @@
         <item name="colorAccent">@android:color/holo_orange_dark</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
     </style>
-
     <style name="Widget.CardContent" parent="android:Widget">
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -27,7 +16,6 @@
         <item name="android:paddingBottom">24dp</item>
         <item name="android:orientation">vertical</item>
     </style>
-
     <style name="spinner_style">
         <item name="android:layout_width">@dimen/spinner_width</item>
         <item name="android:layout_height">@dimen/spinner_height</item>
@@ -42,17 +30,31 @@
 
     <style name="ExpandedCollapsingToolbar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">28sp</item>
-        <item name="android:textColor">#000</item>
+        <item name="android:textColor">@color/colorDetailItem</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="item_style" parent="android:TextAppearance.Medium">
-        <item name="android:background">@drawable/round_corner_item</item>
+        <item name="android:background">@drawable/round_corner_item_white</item>
         <item name="android:textColor">@color/colorCommonText</item>
         <item name="android:padding">@dimen/tv_detail_item_padding</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">@dimen/tv_detail_item_w</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="detail_descr_style">
+        <!--<item name="android:background">@drawable/round_corner_item_colorprimary</item>-->
+        <item name="android:padding">@dimen/tv_detail_descr_padding</item>
+    </style>
+
+    <style name="detail_descr_reverse_style" parent="detail_descr_style">
+        <item name="android:textColor">@color/colorDetailItem</item>
+    </style>
+
+    <style name="detail_descr_title_style" parent="detail_descr_style">
+        <item name="android:textColor">@color/colorCommonText</item>
+        <item name="android:textSize">@dimen/tv_detail_descr_text_size</item>
     </style>
 
 </resources>

@@ -29,13 +29,14 @@
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/ExpandedCollapsingToolbar"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleMarginBottom="16dp">
 
             <fragment
                 android:id="@+id/map"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="205dp"
                 map:cameraTargetLat="23.8412218"
                 map:cameraTargetLng="120.7023239"
                 map:cameraZoom="7" />
@@ -60,16 +61,16 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:theme="@style/Theme.PSI"
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:clickable="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_discuss"
+        android:theme="@style/Theme.PSI"
+        app:backgroundTint="@color/colorWarning"
+        app:fabSize="normal"
         app:layout_anchor="@+id/appbar"
         app:layout_anchorGravity="bottom|right"
-        map:fabSize="mini"/>
+        app:srcCompat="@drawable/ic_warning" />
 
 </android.support.design.widget.CoordinatorLayout>

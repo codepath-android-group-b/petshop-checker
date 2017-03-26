@@ -4,8 +4,12 @@
     <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#FF4081</color>
     <color name="window_background">#FFF5F5F5</color>
-    <color name="colorDetailItemValid">#00ff00</color>
+    <color name="colorDetailItemValid">#ffffbb33</color>
     <color name="colorDetailItem">#fff</color>
     <color name="common_border_color">#FFe3e3e3</color>
     <color name="colorCommonText">#FF000000</color>
+    <color name="colorDetailItemInvalid">#aa333333</color>
+    <color name="colorTextInvalid">#595959</color>
+    <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorWarning">#FFFF0000</color>
 </resources>
