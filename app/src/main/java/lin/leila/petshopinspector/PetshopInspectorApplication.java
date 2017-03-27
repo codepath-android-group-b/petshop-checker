@@ -5,7 +5,9 @@ import android.util.Log;
 
 import lin.leila.petshopinspector.database.PetShopDB;
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
+import lin.leila.petshopinspector.models.PetShopSetting;
 import lin.leila.petshopinspector.utils.AnimalDataUtils;
+import lin.leila.petshopinspector.utils.PetShopUtils;
 
 /*
  * This is the Android application itself and is used to configure various settings
@@ -24,12 +26,19 @@ public class PetshopInspectorApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (!AnimalDataUtils.isDataLoaded(getFilesDir())) {
+        PetShopUtils.setContextWrapper(this);
+        PetShopSetting setting = PetShopUtils.getPetShopSetting();
+
+        if (!AnimalDataUtils.isDataLoaded(setting)) {
             Log.d("DEBUG", "data is not loaded");
-            AnimalDataUtils.copyAnimalDataFromAssets(getAssets(), getFilesDir().getPath());
+            AnimalDataUtils.copyAnimalDataFromAssets(this);
+
         }
         db = PetShopDB.getInstance(getFilesDir().getPath());
+
+        AnimalDataUtils.syncData(this);
     }
+
     public static PetShopInterface getPetShopDB() {
         return db;
     }

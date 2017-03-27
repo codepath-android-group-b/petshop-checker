@@ -22,7 +22,8 @@ import lin.leila.petshopinspector.models.City;
 import lin.leila.petshopinspector.models.District;
 import lin.leila.petshopinspector.models.PetShop;
 
-import static lin.leila.petshopinspector.models.PetShop.parseJson;
+import static lin.leila.petshopinspector.utils.PetShopUtils.parseJson;
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -33,7 +34,7 @@ public class ExampleUnitTest {
     @Test
     public void test() {
 
-        StringBuilder text  = getJsonString();
+        StringBuilder text = getJsonString();
 
         List<PetShop> petShops = new ArrayList<>();
 
@@ -44,7 +45,7 @@ public class ExampleUnitTest {
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                petShops.add(parseJson(object));
+                petShops.add(PetShopUtils.parseJson(object));
 
                 results.add(parseJson(object).getAddress());
             }
@@ -150,13 +151,13 @@ public class ExampleUnitTest {
             object.put("district", district);
             object.put("address", petShop.getAddress());
 
-            String serviceString = petShop.getServices();
+            List<String> services = petShop.getServices();
 
-            object.put("services", parseServieObjectFrom(serviceString));
+            object.put("services", parseServieObjectFrom(services));
 
             object.put("latitude", petShop.getLatitude());
             object.put("longitude", petShop.getLongitude());
-            object.put("manager",petShop.getManager());
+            object.put("manager", petShop.getManager());
 
         } catch (JSONException e) {
             throw new RuntimeException("convert error");
@@ -213,11 +214,8 @@ public class ExampleUnitTest {
     }
 
 
-    private JSONArray parseServieObjectFrom(String serviceString) {
-        String[] services = serviceString.split(" ");
-        if (services.length <= 0) {
-            throw new RuntimeException("parse Service error!");
-        }
+    private JSONArray parseServieObjectFrom(List<String> services) {
+
         JSONArray array = new JSONArray();
 
         for (String service : services) {

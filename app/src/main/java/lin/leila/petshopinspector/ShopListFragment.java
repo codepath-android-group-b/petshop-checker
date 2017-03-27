@@ -69,9 +69,6 @@ public class ShopListFragment extends Fragment {
 
         findView();
         init();
-        spCity.setSelection(0);
-        spZone.setSelection(0);
-        spItem.setSelection(0);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -103,6 +100,10 @@ public class ShopListFragment extends Fragment {
         petShops = new ArrayList<>();
 
         initSpinnerData();
+
+        spCity.setSelection(0);
+        spZone.setSelection(0);
+        spItem.setSelection(0);
 
         adapterCity = new PetShopCitySpinnerArrayAdapter(getContext(), cities);
         spCity.setAdapter(adapterCity);

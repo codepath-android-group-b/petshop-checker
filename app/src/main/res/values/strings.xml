@@ -26,6 +26,7 @@
     <string name="selected_all_dist">區域</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_api_key">AIzaSyCUvMuiKehxYGpmKyrLSQVDQP0IX_2iU9U</string>
+
     <string name="action_settings">Settings</string>
 
     <!-- Shop Detail -->
@@ -35,4 +36,8 @@
     <string name="item_name_sell">販賣</string>
     <string name="item_name_raise">寄養</string>
     <string name="item_descr_name_title">專任人員</string>
+
+    <!-- Firebase url-->
+    <string name="data_version_url">server/saving-data/pet-shops/version</string>
+    <string name="data_url">server/saving-data/pet-shops/pet_shop</string>
 </resources>
