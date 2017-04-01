@@ -40,15 +40,8 @@ public class LoadingShopTask extends AsyncTask<Object, PetShop, Void> {
 
         map = (GoogleMap) params[2];
 
-        int count = 0 ;
-
         for (PetShop petShop : petShops) {
-
-            if(count > 100)
-                break;
-
             publishProgress(petShop);
-            count ++;
         }
         return null;
     }
@@ -63,8 +56,8 @@ public class LoadingShopTask extends AsyncTask<Object, PetShop, Void> {
         MapUtils.addMarker(map,
                 shopLocation,
                 petShop.getShopName(),
-                "test",
-                MapUtils.createBubble(contexts, 6, petShop.getShopName()));
+                "",
+                MapUtils.createBubble(contexts, 6, ""));
 
     }
 }

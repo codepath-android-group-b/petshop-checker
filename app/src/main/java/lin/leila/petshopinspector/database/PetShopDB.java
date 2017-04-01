@@ -74,7 +74,7 @@ public class PetShopDB implements PetShopInterface {
     }
 
     @Override
-    public List<PetShop> getPetShopOrderByDistance(final double latitude, final double longitude) {
+    public List<PetShop> getPetShopOrderByDistance(final double latitude, final double longitude, int maxCount) {
         if (petShopList == null) {
             return new ArrayList<>();
         }
@@ -93,6 +93,10 @@ public class PetShopDB implements PetShopInterface {
                 return Float.compare(distance1, distance2);
             }
         });
+
+        if (result.size() > maxCount) {
+            return result.subList(0, maxCount - 1);
+        }
 
         return result;
     }
