@@ -19,4 +19,11 @@
             android:title="@string/title_contact"></item>
     </group>
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_data_version"
+            android:icon="@drawable/ic_forum"
+            android:title="@string/title_data_version"></item>
+    </group>
+
 </menu>

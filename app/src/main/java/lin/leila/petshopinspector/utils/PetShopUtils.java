@@ -39,6 +39,13 @@ public class PetShopUtils {
         return setting;
     }
 
+    public static Long getPetShopDataVerion() {
+        SharedPreferences sharedPreferences = contextWrapper.getSharedPreferences(SETTINGS_FILE, Context.MODE_PRIVATE);
+        PetShopSetting setting = getSettingFromPreference(sharedPreferences);
+        return setting.getVersion();
+    }
+
+
     public static void isUpdatingPetShopData(Boolean status, String date) {
         SharedPreferences sharedPreferences = contextWrapper.getSharedPreferences(SETTINGS_FILE, Context.MODE_PRIVATE);
 
@@ -48,8 +55,17 @@ public class PetShopUtils {
         editor.apply();
     }
 
+    public static void isUpdatingPetShopData(Boolean status, String date, long version) {
+        SharedPreferences sharedPreferences = contextWrapper.getSharedPreferences(SETTINGS_FILE, Context.MODE_PRIVATE);
 
-    public static PetShopSetting saveSetting(ContextWrapper contextWrapper, PetShopSetting petShopSetting) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(UPDATING_DATA, status);
+        editor.putString(UPDATED_DATE, date);
+        editor.putLong(VERSION, version);
+        editor.apply();
+    }
+
+    public static PetShopSetting saveSetting(PetShopSetting petShopSetting) {
         SharedPreferences.Editor editor = contextWrapper.getSharedPreferences(SETTINGS_FILE, Context.MODE_PRIVATE).edit();
 
         editor.putString(FILE_NAME, petShopSetting.getFileName());
@@ -109,5 +125,35 @@ public class PetShopUtils {
         }
 
         return petShop;
+    }
+
+    public static JSONObject convertObjectToJson(PetShop petShop) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("certNo", petShop.getCertNo());
+            object.put("certDate", petShop.getCertDate());
+            object.put("certGrade", petShop.getCertGrade());
+            object.put("assistant", petShop.getAssistant());
+            object.put("shopName", petShop.getShopName());
+            object.put("city", petShop.getCity());
+            object.put("district", petShop.getDistrict());
+            object.put("address", petShop.getAddress());
+            object.put("services", convertToJsonArray(petShop.getServices()));
+            object.put("latitude", petShop.getLatitude());
+            object.put("longitude", petShop.getLongitude());
+            object.put("manager", petShop.getManager());
+
+        } catch (JSONException e) {
+            throw new RuntimeException("convert error");
+        }
+        return object;
+    }
+
+    private static JSONArray convertToJsonArray(List<String> services) {
+        JSONArray array = new JSONArray();
+        for (String service : services) {
+            array.put(service);
+        }
+        return array;
     }
 }

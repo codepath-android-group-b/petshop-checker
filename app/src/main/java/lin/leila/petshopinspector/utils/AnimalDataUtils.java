@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,7 @@ import java.util.List;
 import lin.leila.petshopinspector.R;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PetShopSetting;
-import lin.leila.petshopinspector.services.LoadingDataTask;
+import lin.leila.petshopinspector.service.LoadingDataTask;
 
 
 /**
@@ -99,7 +100,7 @@ public class AnimalDataUtils {
             petShopSetting.setFileName(DATA_FILE_NAME);
             petShopSetting.setVersion(1L);
 
-            PetShopUtils.saveSetting(contextWrapper, petShopSetting);
+            PetShopUtils.saveSetting(petShopSetting);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,7 +159,7 @@ public class AnimalDataUtils {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Long serverDataVersion = dataSnapshot.getValue(Long.class);
-                Log.d(TAG, "Value is: " + serverDataVersion.toString());
+                Log.d(TAG, "Server version is: " + serverDataVersion.toString());
 
                 PetShopSetting setting = PetShopUtils.getPetShopSetting();
 
@@ -167,7 +168,7 @@ public class AnimalDataUtils {
                 Log.d(TAG, "Version is: " + localDataVersion);
 
                 if (serverDataVersion > localDataVersion) {
-                    loadingData( contextWrapper.getFilesDir().getPath(), contextWrapper.getString(R.string.data_url));
+                    loadingData(contextWrapper.getFilesDir().getPath(), contextWrapper.getString(R.string.data_url), serverDataVersion);
                 }
             }
 
@@ -179,7 +180,7 @@ public class AnimalDataUtils {
         });
     }
 
-    private static void loadingData(final String filesDir, String url) {
+    private static void loadingData(final String filesDir, String url, final long version) {
 
         DatabaseReference petShopRef = database.getReference(url);
         petShopRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -191,7 +192,7 @@ public class AnimalDataUtils {
 
                 LoadingDataTask task = new LoadingDataTask();
 
-                task.execute(dataSnapshot,filesDir +"/" + DATA_FILE_NAME, count);
+                task.execute(dataSnapshot, filesDir + "/" + DATA_FILE_NAME, version, count);
             }
 
             @Override
@@ -199,6 +200,23 @@ public class AnimalDataUtils {
 
             }
         });
+    }
 
+
+    public static void writeJsonToFile(JSONArray array, String fileName) {
+        FileWriter file = null;
+        try {
+            file = new FileWriter(fileName);
+            file.write(array.toString());
+        } catch (Exception e) {
+            throw new RuntimeException("update pet shop data error!", e);
+        } finally {
+            try {
+                file.flush();
+                file.close();
+            } catch (IOException e) {
+                throw new RuntimeException("update pet shop data error!", e);
+            }
+        }
     }
 }

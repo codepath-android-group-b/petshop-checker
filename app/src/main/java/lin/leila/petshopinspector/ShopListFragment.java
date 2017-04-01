@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import lin.leila.petshopinspector.adapters.PetShopCitySpinnerArrayAdapter;
 import lin.leila.petshopinspector.adapters.PetShopDistSpinnerArrayAdapter;
@@ -79,15 +79,6 @@ public class ShopListFragment extends Fragment {
         recyclerView.setAdapter(simpleStringRecyclerViewAdapter);
     }
 
-    private List<String> getRandomSublist(String[] array, int amount) {
-        ArrayList<String> list = new ArrayList<>(amount);
-        Random random = new Random();
-        while (list.size() < amount) {
-            list.add(array[random.nextInt(array.length)]);
-        }
-        return list;
-    }
-
     private void findView() {
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerview);
         spCity = (Spinner) getView().findViewById(R.id.spCity);
@@ -101,10 +92,6 @@ public class ShopListFragment extends Fragment {
 
         initSpinnerData();
 
-        spCity.setSelection(0);
-        spZone.setSelection(0);
-        spItem.setSelection(0);
-
         adapterCity = new PetShopCitySpinnerArrayAdapter(getContext(), cities);
         spCity.setAdapter(adapterCity);
 
@@ -115,16 +102,11 @@ public class ShopListFragment extends Fragment {
         spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.d("DEBUG" , "spCity.onItemSelected");
                 City city = cities.get(position);
 
-                District dist = districts.get(0);
                 changeDistOptions(city);
                 spZone.setSelection(0);
-
-                String service = (String) spItem.getSelectedItem();
-
-                filterShopByCondition(city, dist, service);
             }
 
             @Override
@@ -136,7 +118,7 @@ public class ShopListFragment extends Fragment {
         spZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.d("DEBUG" , "spZone.onItemSelected");
                 City city = (City) spCity.getSelectedItem();
 
                 District dist = districts.get(position);
@@ -158,6 +140,7 @@ public class ShopListFragment extends Fragment {
         spItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("DEBUG" , "spItem.onItemSelected");
                 City city = (City) spCity.getSelectedItem();
                 District dist = (District) spZone.getSelectedItem();
                 String service = (String) spItem.getSelectedItem();

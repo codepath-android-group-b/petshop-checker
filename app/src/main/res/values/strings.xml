@@ -22,8 +22,11 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_privacy">Privacy</string>
     <string name="title_contact">Contact Developers</string>
+    <string name="title_data_version">Data Version</string>
+
     <string name="selected_all_cities">全台</string>
     <string name="selected_all_dist">區域</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_api_key">AIzaSyCUvMuiKehxYGpmKyrLSQVDQP0IX_2iU9U</string>
 
