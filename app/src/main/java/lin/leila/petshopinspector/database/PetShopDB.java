@@ -4,6 +4,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
@@ -40,7 +42,7 @@ public class PetShopDB implements PetShopInterface {
 
     @Override
     public List<PetShop> getPetShop(PetShopQueryCondition condition) {
-        Log.d("DEBUG", "getPetShop condition" +  condition);
+        Log.d("DEBUG", "getPetShop condition" + condition);
 
         List<PetShop> results = new ArrayList<>();
         if (petShopList == null)
@@ -56,7 +58,7 @@ public class PetShopDB implements PetShopInterface {
             }
         }
 
-        Log.d("DEBUG", "count:" +  results.size());
+        Log.d("DEBUG", "count:" + results.size());
         return results;
     }
 
@@ -69,6 +71,30 @@ public class PetShopDB implements PetShopInterface {
     @Override
     public List<City> getCity() {
         return LocationUtils.getInstance().getCities();
+    }
+
+    @Override
+    public List<PetShop> getPetShopOrderByDistance(final double latitude, final double longitude) {
+        if (petShopList == null) {
+            return new ArrayList<>();
+        }
+
+        List<PetShop> result = new ArrayList<>();
+
+        result.addAll(petShopList);
+
+        Collections.sort(result, new Comparator<PetShop>() {
+            @Override
+            public int compare(PetShop o1, PetShop o2) {
+                float distance1 = LocationUtils.getDistanceBetween(o1, latitude, longitude);
+
+                float distance2 = LocationUtils.getDistanceBetween(o2, latitude, longitude);
+
+                return Float.compare(distance1, distance2);
+            }
+        });
+
+        return result;
     }
 
     private boolean isSelectedAll(PetShopQueryCondition condition) {

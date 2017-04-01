@@ -1,10 +1,13 @@
 package lin.leila.petshopinspector.utils;
 
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import lin.leila.petshopinspector.models.City;
 import lin.leila.petshopinspector.models.District;
+import lin.leila.petshopinspector.models.PetShop;
 
 /**
  * Created by javiosyc on 2017/3/18.
@@ -71,5 +74,11 @@ public class LocationUtils {
 
     public List<City> getCities() {
         return instance.cities;
+    }
+
+    public static float getDistanceBetween(PetShop petShop, double latitude, double longitude) {
+        float[] result = new float[1];
+        Location.distanceBetween(latitude, longitude, petShop.getLatitude(), petShop.getLongitude(), result);
+        return result[0];
     }
 }

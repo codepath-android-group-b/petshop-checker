@@ -43,4 +43,7 @@
     <!-- Firebase url-->
     <string name="data_version_url">server/saving-data/pet-shops/version</string>
     <string name="data_url">server/saving-data/pet-shops/pet_shop</string>
+
+    <!-- google map -->
+    <integer name="map_camera_zoom">15</integer>
 </resources>
