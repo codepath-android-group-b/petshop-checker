@@ -1,5 +1,6 @@
 package lin.leila.petshopinspector;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,20 +12,28 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
 import lin.leila.petshopinspector.models.PetShop;
-import lin.leila.petshopinspector.service.LoadingShopTask;
+import lin.leila.petshopinspector.service.AddPetShopMarkerTask;
 
-public class MapFragment extends Fragment implements GoogleMap.OnMapLoadedCallback {
+public class MapFragment extends Fragment implements GoogleMap.OnMapLoadedCallback, GoogleMap.OnMarkerClickListener {
 
     private SupportMapFragment mapFragment;
 
     private GoogleMap map;
 
     private PetShopInterface petShopDb;
+
+
+    private OnMarkerClickListener onMarkerClickListener;
+
+    public interface OnMarkerClickListener {
+        void callMarkerShop(Object object);
+    }
 
     public MapFragment() {
         // Required empty public constructor
@@ -83,9 +92,37 @@ public class MapFragment extends Fragment implements GoogleMap.OnMapLoadedCallba
 
     @Override
     public void onMapLoaded() {
-        List<PetShop> result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 100);
+        List<PetShop> result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 10);
 
-        LoadingShopTask task = new LoadingShopTask();
-        task.execute(getActivity(), result, map);
+        AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
+        task.execute(result);
+
+        map.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        PetShop petShop = (PetShop) marker.getTag();
+
+        onMarkerClickListener.callMarkerShop(petShop);
+        return true;
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnMarkerClickListener) {
+            onMarkerClickListener = (OnMarkerClickListener) context;
+        } else {
+            throw new ClassCastException();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onMarkerClickListener = null;
     }
 }

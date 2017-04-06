@@ -1,5 +1,6 @@
 package lin.leila.petshopinspector;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -19,9 +20,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.utils.PetShopUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener{
 
     private DrawerLayout mDrawerLayout;
 
@@ -96,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void callMarkerShop(Object o) {
+        PetShop petShop =  (PetShop) o;
+        Intent intent = new Intent(this, ShopDetailActivity.class);
+        intent.putExtra(ShopDetailActivity.EXTRA_NAME, petShop);
+
+        startActivity(intent);
+    }
+
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
