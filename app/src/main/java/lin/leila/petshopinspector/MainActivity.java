@@ -22,8 +22,9 @@ import java.util.List;
 
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.utils.PetShopUtils;
+import static android.widget.Toast.makeText;
 
-public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener{
+public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener {
 
     private DrawerLayout mDrawerLayout;
 
@@ -88,8 +89,22 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_data_version:
+                                makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
+                            case R.id.nav_home:
+                                Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.nav_messages:
+                                Toast.makeText(MainActivity.this, "Privacy", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.nav_contact:
+                                Toast.makeText(MainActivity.this, "Contact", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+
                         if (R.id.nav_data_version == menuItem.getItemId()) {
-                            Toast.makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
+                            makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
                         }
 
                         menuItem.setChecked(true);

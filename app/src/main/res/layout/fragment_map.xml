@@ -10,8 +10,8 @@
         android:tag="test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        map:cameraTargetLat="25.0049394"
-        map:cameraTargetLng="121.5427091"
+        map:cameraTargetLat="25.0403729"
+        map:cameraTargetLng="121.5059941"
         map:cameraZoom= "@integer/map_camera_zoom"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
