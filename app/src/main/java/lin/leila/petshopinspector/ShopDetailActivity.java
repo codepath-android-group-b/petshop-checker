@@ -7,23 +7,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
@@ -34,7 +30,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,7 +45,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickClick;
 import com.vansuita.pickimage.listeners.IPickResult;
 
 import lin.leila.petshopinspector.models.EmailAddress;
@@ -69,9 +63,11 @@ public class ShopDetailActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         GoogleMap.OnMapLoadedCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback,
         IPickResult{
 
     public static final String EXTRA_NAME = "shop_name";
+    private static final int PHONE_DIALOG_RESULT = 20;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
@@ -268,7 +264,17 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+
+        if(requestCode == PHONE_DIALOG_RESULT) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PhoneDialog();
+            } else {
+                return;
+            }
+        } else {
+
+            ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        }
     }
 
 
@@ -531,6 +537,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
         phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
+
         //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -540,6 +547,11 @@ public class ShopDetailActivity extends AppCompatActivity implements
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    PHONE_DIALOG_RESULT);
+
             return;
         }
         startActivity(phoneIntent);
@@ -614,5 +626,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         //scrollToTop();
     }
+
+
 
 }
