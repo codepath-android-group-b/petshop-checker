@@ -7,7 +7,7 @@
     <style name="Theme.PSI" parent="Theme.AppCompat.DayNight.NoActionBar" >
         <item name="colorPrimary">@android:color/holo_orange_light</item>
         <item name="colorAccent">@android:color/holo_orange_dark</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
     </style>
     <style name="Widget.CardContent" parent="android:Widget">
         <item name="android:paddingLeft">16dp</item>

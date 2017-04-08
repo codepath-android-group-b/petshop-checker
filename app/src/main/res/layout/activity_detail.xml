@@ -7,11 +7,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="lin.leila.petshopinspector.ShopDetailActivity">
-
-    <include layout="@layout/content_detail" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -26,20 +24,10 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginBottom="16dp"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleMarginBottom="10dp"
             app:expandedTitleTextAppearance="@style/ExpandedCollapsingToolbar"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <fragment
-                android:id="@+id/map"
-                class="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="205dp"
-                map:cameraTargetLat="23.8412218"
-                map:cameraTargetLng="120.7023239"
-                map:cameraZoom="7" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -56,6 +44,15 @@
                 android:layout_gravity="center"
                 android:visibility="visible" />
 
+            <fragment
+                android:id="@+id/map"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                map:cameraTargetLat="23.8412218"
+                map:cameraTargetLng="120.7023239"
+                map:cameraZoom="7" />
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
@@ -63,13 +60,10 @@
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_down"
         android:layout_width="0dp"
-        android:layout_height="626dp"
-        android:layout_alignParentRight="true"
+        android:layout_height="0dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="280dp"
-        android:layout_marginTop="200dp"
+        android:layout_gravity="bottom|end"
         fab:fab_addButtonColorNormal="@color/pink"
         fab:fab_addButtonColorPressed="@color/pink_pressed"
         fab:fab_addButtonPlusIconColor="@color/half_black"
@@ -81,29 +75,31 @@
             android:id="@+id/button_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_icon="@drawable/ic_email"
             fab:fab_colorNormal="@color/pink"
             fab:fab_colorPressed="@color/pink_pressed"
+            fab:fab_icon="@drawable/ic_email"
             fab:fab_title="EMAIL" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_icon="@drawable/ic_photo"
             fab:fab_colorNormal="@color/pink"
             fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@drawable/ic_photo"
             fab:fab_title="PHOTO" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_icon="@drawable/ic_phone"
             fab:fab_colorNormal="@color/pink"
             fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@drawable/ic_phone"
             fab:fab_title="PHONE" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <include layout="@layout/content_detail" />
 
 </android.support.design.widget.CoordinatorLayout>
