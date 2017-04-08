@@ -12,7 +12,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,11 +24,16 @@ import java.util.List;
 
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.utils.PetShopUtils;
+
 import static android.widget.Toast.makeText;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener {
 
     private DrawerLayout mDrawerLayout;
+
+    private ViewPager viewPager;
+
+    private Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
             setupDrawerContent(navigationView);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
@@ -59,11 +66,42 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                if (!TextUtils.isEmpty(query)) {
+                    Fragment fragment = adapter.getItem(0);
+
+                    if (fragment != null && fragment instanceof ShopListFragment) {
+                        ShopListFragment listFrag = (ShopListFragment) fragment;
+                        listFrag.filterShopByShopName(query);
+
+                        viewPager.setCurrentItem(0,true);
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ShopListFragment(), "Shop List");
         adapter.addFragment(new MapFragment(), "MAP");
         viewPager.setAdapter(adapter);
@@ -82,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
     private void setupDrawerContent(NavigationView navigationView) {
 
         Menu item = navigationView.getMenu();
-
-        item.addSubMenu("sdf");
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -116,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 
     @Override
     public void callMarkerShop(Object o) {
-        PetShop petShop =  (PetShop) o;
+        PetShop petShop = (PetShop) o;
         Intent intent = new Intent(this, ShopDetailActivity.class);
         intent.putExtra(ShopDetailActivity.EXTRA_NAME, petShop);
 
