@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,11 +16,14 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
@@ -29,6 +34,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,9 +47,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickClick;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
+import lin.leila.petshopinspector.models.PhoneBook;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -56,7 +68,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        GoogleMap.OnMapLoadedCallback {
+        GoogleMap.OnMapLoadedCallback,
+        IPickResult{
 
     public static final String EXTRA_NAME = "shop_name";
     private SupportMapFragment mapFragment;
@@ -83,9 +96,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvCertNo;
     ProgressBar progressBar;
 
-    private EmailAddress emailAddress= new EmailAddress();
+    private EmailAddress emailAddress = new EmailAddress();
+    private PhoneBook phoneBook = new PhoneBook();
     EditText passwordInput;
-    FloatingActionButton fab;
+    //FloatingActionButton fab;
+    com.getbase.floatingactionbutton.FloatingActionButton phoneAction;
+    com.getbase.floatingactionbutton.FloatingActionButton photoAction;
+    com.getbase.floatingactionbutton.FloatingActionButton emailAction;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,13 +152,36 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade.setText(shopDetail.getCertGrade());
         tvValidDate.setText(shopDetail.getCertDate());
         tvCertNo.setText(shopDetail.getCertNo());
+        /*
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 EmailDialog();
             }
         });
+   */
 
+        phoneAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhoneDialog();
+                //EmailDialog();
+                //Snackbar.make(coordinatorLayout, "oooo", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        photoAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoDialog();
+                //Snackbar.make(coordinatorLayout, "oooo", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        emailAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EmailDialog();
+            }
+        });
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -169,14 +209,17 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvCertNo = (TextView) findViewById(R.id.tvCertNo);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
-        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        phoneAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_phone);
+        photoAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_photo);
+        emailAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_email);
+        //fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
     }
 
     public void ifItemExisted(PetShop shopDetail) {
-        final String[] items = {"買賣","寄養","繁殖"};
+        final String[] items = {"買賣", "寄養", "繁殖"};
         TextView[] tvItems = {tvItem1, tvItem2, tvItem3};
 
-        for(int i = 0; i < items.length; i++) {
+        for (int i = 0; i < items.length; i++) {
             tvItems[i].setText(items[i]);
             if (shopDetail.getServices().indexOf(items[i]) >= 0) {
                 tvItems[i].setBackground(getResources().getDrawable(R.drawable.round_corner_valid_item));
@@ -224,7 +267,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-         ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
 
@@ -251,6 +294,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         // Decide what to do based on the original request code
         switch (requestCode) {
 
@@ -326,6 +370,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
@@ -472,4 +517,92 @@ public class ShopDetailActivity extends AppCompatActivity implements
                 .show();
 
     }
+
+    public void PhoneDialog() {
+        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+        String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
+        phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
+        //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        startActivity(phoneIntent);
+
+    }
+    public void PhotoDialog(){
+//        PickSetup setup = new PickSetup();
+//        PickImageDialog.build(setup)
+//                .setOnPickResult(new IPickResult() {
+//                    @Override
+//                    public void onPickResult(PickResult r) {
+//                        r.getBitmap();
+//                        r.getError();
+//                        r.getUri();
+//                    }
+//                })
+//                .show(this);
+
+        PickImageDialog.build(new PickSetup()).show(this);
+
+        /*
+
+        PickImageDialog dialog = PickImageDialog.build(new PickSetup());
+        dialog.setOnClick(new IPickClick() {
+            @Override
+            public void onGalleryClick() {
+                Toast.makeText(ShopDetailActivity.this, "ga", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCameraClick() {
+                Toast.makeText(ShopDetailActivity.this, "ph", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        dialog.setOnPickResult(new IPickResult() {
+                    @Override
+                    public void onPickResult(PickResult r) {
+                        String test= r.getUri().toString();
+                        Toast.makeText(ShopDetailActivity.this, test, Toast.LENGTH_SHORT).show();
+                        //getImageView().setImageBitmap(r.getBitmap());
+                        //TODO: do what you have to...
+                    }
+
+                }).show(this);
+
+                */
+    }
+
+    @Override
+    public void onPickResult(final PickResult r) {
+        if (r.getError() == null) {
+            //If you want the Uri.
+            //Mandatory to refresh image from Uri.
+            //getImageView().setImageURI(null);
+
+            //Setting the real returned image.
+            //getImageView().setImageURI(r.getUri());
+            Toast.makeText(this, r.getUri().toString(), Toast.LENGTH_LONG).show();
+
+            //If you want the Bitmap.
+            //getImageView().setImageBitmap(r.getBitmap());
+
+            //r.getPath();
+        } else {
+            //Handle possible errors
+            //TODO: do what you have to do with r.getError();
+            Toast.makeText(this, r.getError().getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        //scrollToTop();
+    }
+
 }
