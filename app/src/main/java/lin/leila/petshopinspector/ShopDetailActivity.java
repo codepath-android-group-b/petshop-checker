@@ -75,7 +75,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private long FASTEST_INTERVAL = 50000; /* 5 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -157,15 +157,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
         appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0)
-                {
-                    mapFragment.getView().setVisibility(View.VISIBLE);
-                    collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorBlack));
-                }
-                else
+                if ((verticalOffset*(-1)) > 400)
                 {
                     mapFragment.getView().setVisibility(View.INVISIBLE);
                     collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+                } else {
+                    mapFragment.getView().setVisibility(View.VISIBLE);
+                    collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorBlack));
                 }
             }
         });
@@ -245,9 +243,10 @@ public class ShopDetailActivity extends AppCompatActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
+//            map.getUiSettings().setScrollGesturesEnabled(false);
         } else {
             Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
         }
@@ -256,8 +255,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onMapLoaded() {
         progressBar.setVisibility(View.GONE);
-//        Log.d("###", String.valueOf(shopDetail.getLatitude()) + String.valueOf(shopDetail.getLongitude()));
-
         LatLng shopLocation = new LatLng(shopDetail.getLatitude(), shopDetail.getLongitude());
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 15);
@@ -265,7 +262,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
         MapUtils.addMarker(map,
                 shopLocation,
                 shopDetail.getShopName(),
-                "test",
                 MapUtils.createBubble(ShopDetailActivity.this, 6, shopDetail.getShopName()));
     }
 
@@ -362,14 +358,16 @@ public class ShopDetailActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Snackbar.make(coordinatorLayout,
-                    "GPS location was found!", Snackbar.LENGTH_LONG).show();
+           // Snackbar.make(mapFragment.getView(),
+           //         "GPS location was found!", Snackbar.LENGTH_LONG).show();
+            Log.d("DEBUG-GPS", "GPS location was found!");
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             map.animateCamera(cameraUpdate);
         } else {
-            Snackbar.make(coordinatorLayout,
-                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
+            Log.d("DEBUG-GPS", "Current location was null, enable GPS on emulator!");
+//            Snackbar.make(mapFragment.getView(),
+//                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
         }
         startLocationUpdates();
     }

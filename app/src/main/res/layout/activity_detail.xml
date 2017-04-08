@@ -25,7 +25,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginBottom="10dp"
-            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleMarginStart="68dp"
             app:expandedTitleTextAppearance="@style/ExpandedCollapsingToolbar"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -50,6 +50,7 @@
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
                 map:cameraTargetLat="23.8412218"
                 map:cameraTargetLng="120.7023239"
                 map:cameraZoom="7" />
