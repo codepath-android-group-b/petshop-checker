@@ -24,7 +24,7 @@ public class AddPetShopMarkerTask extends AsyncTask<List<PetShop>, PetShop, Void
 
     private final boolean appended;
 
-    private final int DEFAULT_DELAY_MILLIS_SEC = 5 * 1000;
+    private final int DEFAULT_DELAY_MILLIS_SEC = 1 * 1000;
 
     public AddPetShopMarkerTask(Context contexts, GoogleMap map) {
         this.contexts = contexts;
@@ -40,7 +40,7 @@ public class AddPetShopMarkerTask extends AsyncTask<List<PetShop>, PetShop, Void
 
     @Override
     protected void onPreExecute() {
-
+        Log.d("DEBUG", "CLEAR Method");
         if (map != null && !appended) {
             map.clear();
         }

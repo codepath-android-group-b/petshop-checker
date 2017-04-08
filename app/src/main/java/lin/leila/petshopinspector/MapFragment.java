@@ -61,7 +61,7 @@ public class MapFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 1500000; /* 5 secs */
+    private long FASTEST_INTERVAL = 100000; /* 5 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -131,7 +131,12 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onMapLoaded() {
-        List<PetShop> result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 10);
+        List<PetShop> result;
+        if (glocation.latitude > 0) {
+            result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 10);
+        } else {
+            result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 10);
+        }
 
         AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
         task.execute(result);
@@ -162,11 +167,6 @@ public class MapFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         onMarkerClickListener = null;
-        List<PetShop> result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 20);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(glocation, 15);
-        map.animateCamera(cameraUpdate);
-        LoadingShopTask task = new LoadingShopTask();
-        task.execute(getActivity(), result, map);
     }
 
     @Override
@@ -270,10 +270,8 @@ public class MapFragment extends Fragment implements
     public void onLocationChanged(Location location) {
         glocation = new LatLng(location.getLatitude(), location.getLongitude());
         // Report to the UI that the location was updated
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15);
-        map.animateCamera(cameraUpdate);
 
-        List<PetShop> result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 10);
+        List<PetShop> result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 10);
 
         AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
         task.execute(result);
@@ -288,6 +286,8 @@ public class MapFragment extends Fragment implements
                 return true;
             }
         });
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(glocation, 15);
+        map.animateCamera(cameraUpdate);
     }
     @Override
     public void onConnectionSuspended(int i) {
