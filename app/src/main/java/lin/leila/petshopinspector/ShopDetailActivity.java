@@ -95,6 +95,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvValidDate;
     TextView tvCertNo;
     ProgressBar progressBar;
+    String photoUri;
 
     private EmailAddress emailAddress = new EmailAddress();
     private PhoneBook phoneBook = new PhoneBook();
@@ -487,7 +488,15 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         Uri uri = Uri.parse(uriText);
 
                         Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                        if(photoUri!=null){
+                        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));}
+                        //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
                         sendIntent.setData(uri);
+
+
+                       // it.setType("image/jpeg");
+                        //sendIntent.putExtra(android.content.Intent.EXTRA_STREAM, photoUri);
+                        //sendIntent.setData(uri);
 
                         startActivity(Intent.createChooser(sendIntent, "Please attach image/video in email"));
 
@@ -519,7 +528,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     }
 
     public void PhoneDialog() {
-        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
         phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
         //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
@@ -590,8 +599,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
             //Setting the real returned image.
             //getImageView().setImageURI(r.getUri());
-            Toast.makeText(this, r.getUri().toString(), Toast.LENGTH_LONG).show();
 
+            photoUri= r.getUri().toString();
+            Toast.makeText(this, photoUri, Toast.LENGTH_LONG).show();
             //If you want the Bitmap.
             //getImageView().setImageBitmap(r.getBitmap());
 

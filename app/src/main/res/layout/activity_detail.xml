@@ -24,8 +24,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="16dp"
             app:expandedTitleMarginBottom="10dp"
+            app:expandedTitleMarginStart="16dp"
             app:expandedTitleTextAppearance="@style/ExpandedCollapsingToolbar"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -33,6 +33,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:elevation="5dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/Theme.PSI.PopupOverlay" />
 
@@ -61,14 +62,10 @@
         android:id="@+id/multiple_actions_down"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
         android:layout_gravity="bottom|end"
         fab:fab_addButtonColorNormal="@color/pink"
         fab:fab_addButtonColorPressed="@color/pink_pressed"
         fab:fab_addButtonPlusIconColor="@color/half_black"
-        fab:fab_addButtonSize="mini"
-        fab:fab_expandDirection="down"
         fab:fab_labelStyle="@style/menu_labels_style">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -76,9 +73,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/pink"
-            fab:fab_colorPressed="@color/pink_pressed"
-            fab:fab_icon="@drawable/ic_email"
-            fab:fab_title="EMAIL" />
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_title="email" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_photo"
@@ -86,8 +82,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/pink"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_icon="@drawable/ic_photo"
-            fab:fab_title="PHOTO" />
+            fab:fab_title="add image" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_phone"
@@ -95,8 +90,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/pink"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_icon="@drawable/ic_phone"
-            fab:fab_title="PHONE" />
+            fab:fab_title="call local" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
