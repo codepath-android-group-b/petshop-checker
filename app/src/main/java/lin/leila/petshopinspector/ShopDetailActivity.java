@@ -528,7 +528,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     }
 
     public void PhoneDialog() {
-        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
         phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
         //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
