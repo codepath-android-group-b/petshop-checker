@@ -17,4 +17,48 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_view"/>
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_main"
+        android:layout_width="483dp"
+        android:layout_height="537dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:fab_addButtonColorNormal="@color/pink"
+        app:fab_addButtonColorPressed="@color/pink_pressed"
+        app:fab_addButtonPlusIconColor="@color/half_black"
+        app:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_email_main"
+            app:fab_colorNormal="@color/pink"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_email"
+            app:fab_title="email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_photo_main"
+            app:fab_colorNormal="@color/pink"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_photo"
+            app:fab_title="add image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_phone_main"
+            app:fab_colorNormal="@color/pink"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_phone"
+            app:fab_title="call local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
 </android.support.v4.widget.DrawerLayout>

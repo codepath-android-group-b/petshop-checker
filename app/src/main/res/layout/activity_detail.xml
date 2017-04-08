@@ -61,7 +61,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/ultiple_actions_down"
+        android:id="@+id/multiple_actions_down"
         android:layout_width="483dp"
         android:layout_height="537dp"
         android:layout_alignParentBottom="true"

@@ -1,7 +1,12 @@
 package lin.leila.petshopinspector;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,7 +20,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +40,11 @@ import static android.widget.Toast.makeText;
 public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener {
 
     private DrawerLayout mDrawerLayout;
+    //FloatingActionButton fab;
+    com.getbase.floatingactionbutton.FloatingActionButton phoneAction;
+    com.getbase.floatingactionbutton.FloatingActionButton photoAction;
+    com.getbase.floatingactionbutton.FloatingActionButton emailAction;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +73,15 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+
+        findView();
+        emailAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EmailDialogMain();
+            }
+        });
     }
 
     @Override
@@ -151,5 +178,86 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
         public CharSequence getPageTitle(int position) {
             return mFragmentTitles.get(position);
         }
+    }
+    public void findView(){
+        phoneAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_phone_main);
+        photoAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_photo_main);
+        emailAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_email_main);
+    }
+
+    public void EmailDialogMain() {
+        MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
+                .customView(R.layout.email_selection_fragment, true)
+                .title("檢舉 ")
+                .positiveText("Email")
+                .negativeText("Cancel")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        View positive = dialog.getActionButton(DialogAction.POSITIVE);
+                        //passwordInput = (EditText) dialog.getCustomView().findViewById(R.id.password);
+                        CheckBox checkbox = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword);
+                        CheckBox checkbox2 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword2);
+                        CheckBox checkbox3 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword3);
+                        CheckBox checkbox4 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword4);
+
+                        String emailtitle = "檢舉 ";
+                        String emailsubject = new String();
+                        //save input
+                        emailsubject = "敬啟者，\r\n";
+
+                        emailsubject = emailsubject + "\r\n該店寵物登記資料如下：\r\n" +
+                                "日期："+ "\r\n盼貴單位能妥善處理，並公布或回覆，謝謝。";
+
+                        String emailaddress = "test@gmail.com";
+                        /*if (emailaddress == null) {
+                            emailaddress = "test@gmail.com";
+                        }*/
+
+                        String uriText = "mailto:" + emailaddress +
+                                "?subject=" + Uri.encode(emailtitle) +
+                                "&body=" + Uri.encode(emailsubject);
+
+                        Uri uri = Uri.parse(uriText);
+
+                        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                        /* if(photoUri!=null){
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));}*/
+                        //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
+                        sendIntent.setData(uri);
+
+
+                        // it.setType("image/jpeg");
+                        //sendIntent.putExtra(android.content.Intent.EXTRA_STREAM, photoUri);
+                        //sendIntent.setData(uri);
+
+                        startActivity(Intent.createChooser(sendIntent, "Please attach image/video in email"));
+
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                })
+                .showListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                    }
+                })
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                    }
+                })
+                .show();
+
     }
 }

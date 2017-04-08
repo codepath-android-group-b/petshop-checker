@@ -450,6 +450,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         CheckBox checkbox2 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword2);
                         CheckBox checkbox3 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword3);
                         CheckBox checkbox4 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword4);
+                        CheckBox checkbox5 = (CheckBox) dialog.getCustomView().findViewById(R.id.addBCC);
 
                         String emailtitle = "檢舉 " + shopDetail.getShopName();
                         String emailsubject = new String();
@@ -481,13 +482,21 @@ public class ShopDetailActivity extends AppCompatActivity implements
                             emailaddress = "test@gmail.com";
                         }
 
-                        String uriText = "mailto:" + emailaddress +
-                                "?subject=" + Uri.encode(emailtitle) +
+                        String uriText="mailto:" + emailaddress+","+"yichuchen.tiawan@gmail.com";
+                        if(checkbox5.isChecked()){
+
+                            uriText=uriText+","+"petshopiapp@gmail.com";
+                        }
+                        //mailto:?bcc=mailaddress
+                        uriText=uriText+ "?subject=" + Uri.encode(emailtitle) +
                                 "&body=" + Uri.encode(emailsubject);
 
                         Uri uri = Uri.parse(uriText);
 
                         Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                        if(checkbox5.isChecked()){
+                            sendIntent.putExtra(Intent.EXTRA_CC, "petshopiapp@gmail.com");
+                        }
                         if(photoUri!=null){
                         sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));}
                         //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
