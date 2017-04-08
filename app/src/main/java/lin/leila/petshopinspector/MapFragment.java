@@ -1,13 +1,12 @@
 package lin.leila.petshopinspector;
 
-import android.content.Context;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -30,16 +28,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
 import lin.leila.petshopinspector.interfaces.PetShopInterface;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.service.AddPetShopMarkerTask;
-
-import lin.leila.petshopinspector.service.LoadingShopTask;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -57,14 +53,13 @@ public class MapFragment extends Fragment implements
     private LatLng glocation = new LatLng(25.0403729, 121.5059941);
 
 
-//    public static final String EXTRA_NAME = "shop_name";
+    //    public static final String EXTRA_NAME = "shop_name";
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
     private long FASTEST_INTERVAL = 100000; /* 5 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
 
 
     private OnMarkerClickListener onMarkerClickListener;
@@ -203,7 +198,7 @@ public class MapFragment extends Fragment implements
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-			/*
+            /*
 			 * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
@@ -268,27 +263,38 @@ public class MapFragment extends Fragment implements
     }
 
     public void onLocationChanged(Location location) {
-        glocation = new LatLng(location.getLatitude(), location.getLongitude());
-        // Report to the UI that the location was updated
 
-        List<PetShop> result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 10);
+        if (isNeededUpdateMarker(glocation, location)) {
+            glocation = new LatLng(location.getLatitude(), location.getLongitude());
+            // Report to the UI that the location was updated
 
-        AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
-        task.execute(result);
+            List<PetShop> result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 10);
 
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
+            AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
+            task.execute(result);
 
-                PetShop petShop = (PetShop) marker.getTag();
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
 
-                onMarkerClickListener.callMarkerShop(petShop);
-                return true;
-            }
-        });
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(glocation, 15);
-        map.animateCamera(cameraUpdate);
+                    PetShop petShop = (PetShop) marker.getTag();
+
+                    onMarkerClickListener.callMarkerShop(petShop);
+                    return true;
+                }
+            });
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(glocation, 15);
+            map.animateCamera(cameraUpdate);
+        }
     }
+
+    private boolean isNeededUpdateMarker(LatLng glocation, Location location) {
+        float[] result = new float[1];
+        Location.distanceBetween(glocation.latitude, glocation.longitude, location.getLatitude(), location.getLongitude(), result);
+
+        return result[0] > 2 * 1000;
+    }
+
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
