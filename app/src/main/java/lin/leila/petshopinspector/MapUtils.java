@@ -25,19 +25,16 @@ public class MapUtils {
     }
 
     public static Marker addMarker(GoogleMap map, LatLng point, String title,
-                                   String snippet,
                                    BitmapDescriptor bitmapDescriptor) {
-        return addMarker(map, point, title, snippet, bitmapDescriptor, null);
+        return addMarker(map, point, title, bitmapDescriptor, null);
     }
 
     public static Marker addMarker(GoogleMap map, LatLng point, String title,
-                                   String snippet,
                                    BitmapDescriptor bitmapDescriptor, Object tag) {
         // Creates and adds marker to the map
         MarkerOptions options = new MarkerOptions()
                 .position(point)
                 .title(title)
-                .snippet(snippet)
                 .icon(bitmapDescriptor);
 
         Marker marker = map.addMarker(options);

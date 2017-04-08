@@ -19,43 +19,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="60dp"
         android:weightSum="1">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/card_margin"
-            android:layout_marginStart="@dimen/card_margin">
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin">
 
             <TextView
                 android:id="@+id/tvTitleValidDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/item_descr_valid_date_title"
+                android:layout_alignParentTop="true"
                 android:paddingEnd="@dimen/tv_detail_descr_padding"
                 android:paddingStart="@dimen/tv_detail_descr_padding"
                 android:paddingTop="@dimen/tv_detail_descr_padding"
-                android:layout_alignParentTop="true" />
+                android:text="@string/item_descr_valid_date_title" />
 
             <TextView
                 android:id="@+id/tvValidDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:text="TextView"
+                android:layout_toEndOf="@+id/tvTitleValidDate"
                 android:paddingEnd="@dimen/tv_detail_descr_padding"
                 android:paddingStart="@dimen/tv_detail_descr_padding"
                 android:paddingTop="@dimen/tv_detail_descr_padding"
-                android:layout_toEndOf="@+id/tvTitleValidDate" />
+                android:text="TextView" />
         </RelativeLayout>
 
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/card_margin"
-            android:layout_marginEnd="@dimen/card_margin">
+            android:layout_marginBottom="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin">
 
             <RelativeLayout
                 style="@style/Widget.CardContent"
@@ -90,8 +90,9 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/card_margin"
-            android:layout_marginEnd="@dimen/card_margin">
+            android:layout_marginBottom="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -103,16 +104,18 @@
                     style="@style/detail_descr_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true" />
+                    android:text="TextView" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/card_margin"
-            android:layout_marginEnd="@dimen/card_margin">
+            android:layout_marginBottom="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -132,9 +135,9 @@
                     <TextView
                         android:id="@+id/tvItem1"
                         style="@style/item_style"
-                        android:text="@string/item_name_breed"
                         android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/item_name_breed" />
 
                     <TextView
                         android:id="@+id/tvItem2"
@@ -158,16 +161,16 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        style="@style/detail_descr_style"
                         android:id="@+id/tvLicensed"
+                        style="@style/detail_descr_style"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:gravity="center_vertical"
-                        android:paddingTop="8dp"
-                        android:paddingStart="@dimen/tv_detail_descr_padding"
                         android:paddingEnd="@dimen/tv_detail_descr_padding"
+                        android:paddingStart="@dimen/tv_detail_descr_padding"
+                        android:paddingTop="8dp"
                         android:text="@string/item_descr_title" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -177,8 +180,9 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/card_margin"
-            android:layout_marginEnd="@dimen/card_margin">
+            android:layout_marginBottom="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin">
 
             <RelativeLayout
                 style="@style/Widget.CardContent"
@@ -191,18 +195,18 @@
                     style="@style/detail_descr_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/item_descr_name_title"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:text="@string/item_descr_name_title" />
 
                 <TextView
                     android:id="@+id/tvAssistant"
                     style="@style/detail_descr_title_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true" />
+                    android:text="TextView" />
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>

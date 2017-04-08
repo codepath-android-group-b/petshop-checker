@@ -18,4 +18,6 @@ public interface PetShopInterface {
     public List<City> getCity();
 
     public List<PetShop> getPetShopOrderByDistance(double latitude, double longitude,int maxCount);
+
+    public List<PetShop> getPetShopByName(String name);
 }

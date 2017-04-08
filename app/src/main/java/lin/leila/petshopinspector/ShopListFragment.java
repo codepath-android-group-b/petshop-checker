@@ -102,11 +102,19 @@ public class ShopListFragment extends Fragment {
         spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("DEBUG" , "spCity.onItemSelected");
+                Log.d("DEBUG", "spCity.onItemSelected");
                 City city = cities.get(position);
 
                 changeDistOptions(city);
-                spZone.setSelection(0);
+
+                if (spZone.getSelectedItemPosition() == 0) {
+                    District dist = districts.get(position);
+                    String service = (String) spItem.getSelectedItem();
+
+                    filterShopByCondition(city, dist, service);
+                } else {
+                    spZone.setSelection(0);
+                }
             }
 
             @Override
@@ -118,7 +126,7 @@ public class ShopListFragment extends Fragment {
         spZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("DEBUG" , "spZone.onItemSelected");
+                Log.d("DEBUG", "spZone.onItemSelected");
                 City city = (City) spCity.getSelectedItem();
 
                 District dist = districts.get(position);
@@ -140,7 +148,7 @@ public class ShopListFragment extends Fragment {
         spItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("DEBUG" , "spItem.onItemSelected");
+                Log.d("DEBUG", "spItem.onItemSelected");
                 City city = (City) spCity.getSelectedItem();
                 District dist = (District) spZone.getSelectedItem();
                 String service = (String) spItem.getSelectedItem();
@@ -277,6 +285,13 @@ public class ShopListFragment extends Fragment {
         if (districts.size() > 1) {
             districts.subList(1, districts.size()).clear();
         }
+    }
+
+    public void filterShopByShopName(String shopName) {
+        List<PetShop> shops = petShopDb.getPetShopByName(shopName);
+        petShops.clear();
+        petShops.addAll(shops);
+        simpleStringRecyclerViewAdapter.notifyDataSetChanged();
     }
 }
 

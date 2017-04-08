@@ -101,6 +101,25 @@ public class PetShopDB implements PetShopInterface {
         return result;
     }
 
+    @Override
+    public List<PetShop> getPetShopByName(String name) {
+
+        if (petShopList == null) {
+            return new ArrayList<>();
+        }
+
+        List<PetShop> result = new ArrayList<>();
+
+        for (PetShop petShop : petShopList) {
+            String shopName = petShop.getShopName();
+
+            if (shopName.indexOf(name) >= 0) {
+                result.add(petShop);
+            }
+        }
+        return result;
+    }
+
     private boolean isSelectedAll(PetShopQueryCondition condition) {
         return condition.getCity().getId() == 0 && condition.getDistrict().getZip() == 0 && TextUtils.isEmpty(condition.getService());
     }

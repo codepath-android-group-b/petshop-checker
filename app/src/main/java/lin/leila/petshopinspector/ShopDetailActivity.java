@@ -7,23 +7,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
@@ -34,7 +32,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,7 +47,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickClick;
 import com.vansuita.pickimage.listeners.IPickResult;
 
 import lin.leila.petshopinspector.models.EmailAddress;
@@ -69,15 +65,17 @@ public class ShopDetailActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         GoogleMap.OnMapLoadedCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback,
         IPickResult{
 
     public static final String EXTRA_NAME = "shop_name";
+    private static final int PHONE_DIALOG_RESULT = 20;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private long FASTEST_INTERVAL = 50000; /* 5 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -85,6 +83,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     CoordinatorLayout coordinatorLayout;
     CollapsingToolbarLayout collapsingToolbar;
+    AppBarLayout appbar;
     Toolbar toolbar;
     TextView tvItem1;
     TextView tvItem2;
@@ -115,6 +114,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(shopDetail.getShopName());
@@ -153,14 +153,20 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade.setText(shopDetail.getCertGrade());
         tvValidDate.setText(shopDetail.getCertDate());
         tvCertNo.setText(shopDetail.getCertNo());
-        /*
-        fab.setOnClickListener(new View.OnClickListener(){
+
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
-            public void onClick(View v){
-                EmailDialog();
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if ((verticalOffset*(-1)) > 400)
+                {
+                    mapFragment.getView().setVisibility(View.INVISIBLE);
+                    collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+                } else {
+                    mapFragment.getView().setVisibility(View.VISIBLE);
+                    collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorBlack));
+                }
             }
         });
-   */
 
         phoneAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +206,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     public void findView() {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+        appbar = (AppBarLayout) findViewById(R.id.appbar);
         tvItem1 = (TextView) findViewById(R.id.tvItem1);
         tvItem2 = (TextView) findViewById(R.id.tvItem2);
         tvItem3 = (TextView) findViewById(R.id.tvItem3);
@@ -236,9 +243,10 @@ public class ShopDetailActivity extends AppCompatActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
+//            map.getUiSettings().setScrollGesturesEnabled(false);
         } else {
             Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
         }
@@ -247,8 +255,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onMapLoaded() {
         progressBar.setVisibility(View.GONE);
-//        Log.d("###", String.valueOf(shopDetail.getLatitude()) + String.valueOf(shopDetail.getLongitude()));
-
         LatLng shopLocation = new LatLng(shopDetail.getLatitude(), shopDetail.getLongitude());
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 15);
@@ -256,7 +262,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
         MapUtils.addMarker(map,
                 shopLocation,
                 shopDetail.getShopName(),
-                "test",
                 MapUtils.createBubble(ShopDetailActivity.this, 6, shopDetail.getShopName()));
     }
 
@@ -268,7 +273,17 @@ public class ShopDetailActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+
+        if(requestCode == PHONE_DIALOG_RESULT) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PhoneDialog();
+            } else {
+                return;
+            }
+        } else {
+
+            ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        }
     }
 
 
@@ -343,14 +358,16 @@ public class ShopDetailActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Snackbar.make(coordinatorLayout,
-                    "GPS location was found!", Snackbar.LENGTH_LONG).show();
+           // Snackbar.make(mapFragment.getView(),
+           //         "GPS location was found!", Snackbar.LENGTH_LONG).show();
+            Log.d("DEBUG-GPS", "GPS location was found!");
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             map.animateCamera(cameraUpdate);
         } else {
-            Snackbar.make(coordinatorLayout,
-                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
+            Log.d("DEBUG-GPS", "Current location was null, enable GPS on emulator!");
+//            Snackbar.make(mapFragment.getView(),
+//                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
         }
         startLocationUpdates();
     }
@@ -540,6 +557,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
         phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
+
         //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -549,6 +567,11 @@ public class ShopDetailActivity extends AppCompatActivity implements
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    PHONE_DIALOG_RESULT);
+
             return;
         }
         startActivity(phoneIntent);
@@ -623,5 +646,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         //scrollToTop();
     }
+
+
 
 }
