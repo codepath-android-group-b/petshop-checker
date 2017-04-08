@@ -80,9 +80,6 @@ public class AddPetShopMarkerTask extends AsyncTask<List<PetShop>, PetShop, Void
 
         Log.d("DEBUG", petShop.getShopName() + " at [ " + petShop.getLatitude() + "," + petShop.getLongitude() + "]");
 
-        MapUtils.addMarker(map,
-                shopLocation,
-                petShop.getShopName(),
-                MapUtils.createBubble(contexts, 6, petShop.getShopName()), petShop);
+        MapUtils.addMarker(map, shopLocation, petShop.getShopName(), petShop);
     }
 }

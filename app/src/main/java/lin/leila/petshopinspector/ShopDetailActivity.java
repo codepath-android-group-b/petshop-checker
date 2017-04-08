@@ -17,7 +17,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -66,7 +65,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         LocationListener,
         GoogleMap.OnMapLoadedCallback,
         ActivityCompat.OnRequestPermissionsResultCallback,
-        IPickResult{
+        IPickResult {
 
     public static final String EXTRA_NAME = "shop_name";
     private static final int PHONE_DIALOG_RESULT = 20;
@@ -135,7 +134,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     }
 
     /*
-	 * Called when the Activity is no longer visible.
+     * Called when the Activity is no longer visible.
 	 */
     @Override
     protected void onStop() {
@@ -157,8 +156,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if ((verticalOffset*(-1)) > 400)
-                {
+                if ((verticalOffset * (-1)) > 400) {
                     mapFragment.getView().setVisibility(View.INVISIBLE);
                     collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
                 } else {
@@ -259,10 +257,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(shopLocation, 15);
         map.animateCamera(cameraUpdate);
-        MapUtils.addMarker(map,
-                shopLocation,
-                shopDetail.getShopName(),
-                MapUtils.createBubble(ShopDetailActivity.this, 6, shopDetail.getShopName()));
+        MapUtils.addMarker(map, shopLocation, shopDetail.getShopName());
     }
 
     @Override
@@ -274,8 +269,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode == PHONE_DIALOG_RESULT) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == PHONE_DIALOG_RESULT) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 PhoneDialog();
             } else {
                 return;
@@ -315,7 +310,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-			/*
+            /*
 			 * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
@@ -358,8 +353,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-           // Snackbar.make(mapFragment.getView(),
-           //         "GPS location was found!", Snackbar.LENGTH_LONG).show();
+            // Snackbar.make(mapFragment.getView(),
+            //         "GPS location was found!", Snackbar.LENGTH_LONG).show();
             Log.d("DEBUG-GPS", "GPS location was found!");
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
@@ -499,28 +494,29 @@ public class ShopDetailActivity extends AppCompatActivity implements
                             emailaddress = "test@gmail.com";
                         }
 
-                        String uriText="mailto:" + emailaddress+","+"yichuchen.tiawan@gmail.com";
-                        if(checkbox5.isChecked()){
+                        String uriText = "mailto:" + emailaddress + "," + "yichuchen.tiawan@gmail.com";
+                        if (checkbox5.isChecked()) {
 
-                            uriText=uriText+","+"petshopiapp@gmail.com";
+                            uriText = uriText + "," + "petshopiapp@gmail.com";
                         }
                         //mailto:?bcc=mailaddress
-                        uriText=uriText+ "?subject=" + Uri.encode(emailtitle) +
+                        uriText = uriText + "?subject=" + Uri.encode(emailtitle) +
                                 "&body=" + Uri.encode(emailsubject);
 
                         Uri uri = Uri.parse(uriText);
 
                         Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-                        if(checkbox5.isChecked()){
+                        if (checkbox5.isChecked()) {
                             sendIntent.putExtra(Intent.EXTRA_CC, "petshopiapp@gmail.com");
                         }
-                        if(photoUri!=null){
-                        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));}
+                        if (photoUri != null) {
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));
+                        }
                         //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
                         sendIntent.setData(uri);
 
 
-                       // it.setType("image/jpeg");
+                        // it.setType("image/jpeg");
                         //sendIntent.putExtra(android.content.Intent.EXTRA_STREAM, photoUri);
                         //sendIntent.setData(uri);
 
@@ -556,7 +552,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     public void PhoneDialog() {
         Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
-        phoneIntent.setData(Uri.parse("tel:"+phoneNumber));
+        phoneIntent.setData(Uri.parse("tel:" + phoneNumber));
 
         //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -577,7 +573,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
         startActivity(phoneIntent);
 
     }
-    public void PhotoDialog(){
+
+    public void PhotoDialog() {
 //        PickSetup setup = new PickSetup();
 //        PickImageDialog.build(setup)
 //                .setOnPickResult(new IPickResult() {
@@ -632,7 +629,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
             //Setting the real returned image.
             //getImageView().setImageURI(r.getUri());
 
-            photoUri= r.getUri().toString();
+            photoUri = r.getUri().toString();
             Toast.makeText(this, photoUri, Toast.LENGTH_LONG).show();
             //If you want the Bitmap.
             //getImageView().setImageBitmap(r.getBitmap());
@@ -646,7 +643,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
         //scrollToTop();
     }
-
 
 
 }

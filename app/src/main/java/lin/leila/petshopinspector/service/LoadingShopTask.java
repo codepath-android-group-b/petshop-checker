@@ -56,10 +56,7 @@ public class LoadingShopTask extends AsyncTask<Object, PetShop, Void> {
 
         LatLng shopLocation = new LatLng(petShop.getLatitude(), petShop.getLongitude());
 
-        MapUtils.addMarker(map,
-                shopLocation,
-                petShop.getShopName(),
-                MapUtils.createBubble(contexts, 6, petShop.getShopName()));
+        MapUtils.addMarker(map, shopLocation, petShop.getShopName());
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

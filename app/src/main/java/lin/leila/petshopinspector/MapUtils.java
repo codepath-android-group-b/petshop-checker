@@ -29,13 +29,23 @@ public class MapUtils {
         return addMarker(map, point, title, bitmapDescriptor, null);
     }
 
+    public static Marker addMarker(GoogleMap map, LatLng point, String title) {
+        return addMarker(map, point, title, null, null);
+    }
+
+    public static Marker addMarker(GoogleMap map, LatLng point, String title, Object tag) {
+        return addMarker(map, point, title, null, tag);
+    }
+
     public static Marker addMarker(GoogleMap map, LatLng point, String title,
                                    BitmapDescriptor bitmapDescriptor, Object tag) {
         // Creates and adds marker to the map
         MarkerOptions options = new MarkerOptions()
                 .position(point)
-                .title(title)
-                .icon(bitmapDescriptor);
+                .title(title);
+
+        if (bitmapDescriptor != null)
+            options.icon(bitmapDescriptor);
 
         Marker marker = map.addMarker(options);
 
