@@ -12,12 +12,14 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
@@ -85,6 +87,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     CoordinatorLayout coordinatorLayout;
     CollapsingToolbarLayout collapsingToolbar;
+    AppBarLayout appbar;
     Toolbar toolbar;
     TextView tvItem1;
     TextView tvItem2;
@@ -115,6 +118,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(shopDetail.getShopName());
@@ -153,14 +157,22 @@ public class ShopDetailActivity extends AppCompatActivity implements
         tvGrade.setText(shopDetail.getCertGrade());
         tvValidDate.setText(shopDetail.getCertDate());
         tvCertNo.setText(shopDetail.getCertNo());
-        /*
-        fab.setOnClickListener(new View.OnClickListener(){
+
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
-            public void onClick(View v){
-                EmailDialog();
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0)
+                {
+                    mapFragment.getView().setVisibility(View.VISIBLE);
+                    collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorBlack));
+                }
+                else
+                {
+                    mapFragment.getView().setVisibility(View.INVISIBLE);
+                    collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+                }
             }
         });
-   */
 
         phoneAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +212,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
     public void findView() {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+        appbar = (AppBarLayout) findViewById(R.id.appbar);
         tvItem1 = (TextView) findViewById(R.id.tvItem1);
         tvItem2 = (TextView) findViewById(R.id.tvItem2);
         tvItem3 = (TextView) findViewById(R.id.tvItem3);
