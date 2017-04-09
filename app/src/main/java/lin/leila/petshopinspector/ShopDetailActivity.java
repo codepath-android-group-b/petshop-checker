@@ -3,7 +3,6 @@ package lin.leila.petshopinspector;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -48,16 +47,19 @@ import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.File;
+import java.io.IOException;
+
 import lin.leila.petshopinspector.fragments.CustomerPickImageBaseDialog;
 import lin.leila.petshopinspector.fragments.CustomerPickImageDialog;
 import lin.leila.petshopinspector.fragments.WorkaroundMapFragment;
 import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PhoneBook;
+import lin.leila.petshopinspector.utils.FileUtils;
+import lin.leila.petshopinspector.utils.IntentUtils;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-
-import static lin.leila.petshopinspector.R.id.imageView;
 
 /**
  * Created by Leila on 2017/3/16.
@@ -74,7 +76,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
         IPickResult {
 
     public static final String EXTRA_NAME = "shop_name";
-    private static final int PHONE_DIALOG_RESULT = 20;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
@@ -99,14 +100,12 @@ public class ShopDetailActivity extends AppCompatActivity implements
     TextView tvValidDate;
     TextView tvCertNo;
     ProgressBar progressBar;
-    String photoUri;
 
     private EmailAddress emailAddress = new EmailAddress();
     private PhoneBook phoneBook = new PhoneBook();
     EditText passwordInput;
-    //FloatingActionButton fab;
+
     com.getbase.floatingactionbutton.FloatingActionButton phoneAction;
-    com.getbase.floatingactionbutton.FloatingActionButton photoAction;
     com.getbase.floatingactionbutton.FloatingActionButton emailAction;
 
     @Override
@@ -175,22 +174,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
         phoneAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PhoneDialog();
-                //EmailDialog();
-                //Snackbar.make(coordinatorLayout, "oooo", Snackbar.LENGTH_LONG).show();
-            }
-        });
-        photoAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoDialog();
-                //Snackbar.make(coordinatorLayout, "oooo", Snackbar.LENGTH_LONG).show();
+                callPhoneToAdmin();
             }
         });
         emailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmailDialog(null);
+                photoDialog();
             }
         });
         if (mapFragment != null) {
@@ -222,9 +212,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         phoneAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_phone);
-        photoAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_photo);
         emailAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_email);
-        //fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
     }
 
     public void ifItemExisted(PetShop shopDetail) {
@@ -246,9 +234,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
         if (map != null) {
-            // Map is ready
-//            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
-
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             map.getUiSettings().setZoomControlsEnabled(true);
             final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar); //parent scrollview in xml, give your scrollview id value
@@ -262,7 +247,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
                     });
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
-//            map.getUiSettings().setScrollGesturesEnabled(false);
         } else {
             Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
         }
@@ -287,14 +271,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PHONE_DIALOG_RESULT) {
+        if (requestCode == IntentUtils.PHONE_DIALOG_RESULT) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                PhoneDialog();
+                callPhoneToAdmin();
             } else {
                 return;
             }
         } else {
-
             ShopDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
         }
     }
@@ -329,7 +312,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
             /*
-			 * If the result code is Activity.RESULT_OK, try to connect again
+             * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -491,7 +474,6 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         ImageView imageView = (ImageView) dialog.getCustomView().findViewById(R.id.imageView);
 
 
-
                         String emailtitle = "檢舉 " + shopDetail.getShopName();
                         String emailsubject = new String();
                         //save input
@@ -523,168 +505,70 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         }
 
                         String uriText = "mailto:" + emailaddress + "," + "yichuchen.tiawan@gmail.com";
-                        if (checkbox5.isChecked()) {
-
-                            uriText = uriText + "," + "petshopiapp@gmail.com";
-                        }
-                        //mailto:?bcc=mailaddress
                         uriText = uriText + "?subject=" + Uri.encode(emailtitle) +
                                 "&body=" + Uri.encode(emailsubject);
 
                         Uri uri = Uri.parse(uriText);
 
                         Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                        sendIntent.setData(uri);
+
                         if (checkbox5.isChecked()) {
-                            sendIntent.putExtra(Intent.EXTRA_CC, "petshopiapp@gmail.com");
+                            sendIntent.putExtra(Intent.EXTRA_CC, new String[] {"petshopiapp@gmail.com"});
                         }
+
                         if (pickResult != null) {
-                            Log.d("DEBUG" , "123" + pickResult.getPath());
-                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(pickResult.getPath()));
-                            sendIntent.setData(uri);
+                            Uri imageUri = null;
+                            if (!FileUtils.isExternalFile(pickResult.getPath())) {
+                                try {
+                                    File file = FileUtils.exportFile(new File(pickResult.getPath()));
+                                    imageUri = Uri.fromFile(file);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                imageUri = pickResult.getUri();
+                            }
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
                         }
-                        //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
-
-
-
-                        // it.setType("image/jpeg");
-                        //sendIntent.putExtra(android.content.Intent.EXTRA_STREAM, photoUri);
-                        //sendIntent.setData(uri);
 
                         startActivity(Intent.createChooser(sendIntent, "Please attach image/video in email"));
-
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                    }
-                })
-                .showListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                    }
-                })
-                .cancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                    }
-                })
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
                     }
                 });
 
         MaterialDialog dialog = builder.show();
 
-        if(pickResult!=null) {
+        if (pickResult != null) {
             ImageView imageView = (ImageView) dialog.getCustomView().findViewById(R.id.imageView);
             imageView.setImageBitmap(pickResult.getBitmap());
         }
     }
 
-    public void PhoneDialog() {
-        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+    public void callPhoneToAdmin() {
         String phoneNumber = phoneBook.getPhoneNumber(shopDetail.getCity());
-        phoneIntent.setData(Uri.parse("tel:" + phoneNumber));
+        Intent phoneIntent = IntentUtils.createCallPhoneIntent(this,phoneNumber);
 
-        //Toast.makeText(this, "Call " + phoneNumber.toString(), Toast.LENGTH_SHORT).show();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    PHONE_DIALOG_RESULT);
-
-            return;
-        }
-        startActivity(phoneIntent);
-
+        if(phoneIntent != null)
+            startActivity(phoneIntent);
     }
 
-    public void PhotoDialog() {
-//        PickSetup setup = new PickSetup();
-//        PickImageDialog.build(setup)
-//                .setOnPickResult(new IPickResult() {
-//                    @Override
-//                    public void onPickResult(PickResult r) {
-//                        r.getBitmap();
-//                        r.getError();
-//                        r.getUri();
-//                    }
-//                })
-//                .show(this);
-
-
-
+    public void photoDialog() {
         CustomerPickImageDialog dialog = CustomerPickImageDialog.build(new PickSetup());
 
         dialog.setOnCancelClickListener(this);
 
         dialog.show(this);
-
-        /*
-
-        PickImageDialog dialog = PickImageDialog.build(new PickSetup());
-        dialog.setOnClick(new IPickClick() {
-            @Override
-            public void onGalleryClick() {
-                Toast.makeText(ShopDetailActivity.this, "ga", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCameraClick() {
-                Toast.makeText(ShopDetailActivity.this, "ph", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        dialog.setOnPickResult(new IPickResult() {
-                    @Override
-                    public void onPickResult(PickResult r) {
-                        String test= r.getUri().toString();
-                        Toast.makeText(ShopDetailActivity.this, test, Toast.LENGTH_SHORT).show();
-                        //getImageView().setImageBitmap(r.getBitmap());
-                        //TODO: do what you have to...
-                    }
-
-                }).show(this);
-
-                */
     }
 
     @Override
     public void onPickResult(final PickResult r) {
         if (r.getError() == null) {
-            //If you want the Uri.
-            //Mandatory to refresh image from Uri.
-            //getImageView().setImageURI(null);
-
-            //Setting the real returned image.
-            //getImageView().setImageURI(r.getUri());
-
-            photoUri = r.getUri().toString();
-            Toast.makeText(this, photoUri, Toast.LENGTH_LONG).show();
-            //If you want the Bitmap.
-            //getImageView().setImageBitmap(r.getBitmap());
-
             EmailDialog(r);
-
-            //r.getPath();
         } else {
             //Handle possible errors
             //TODO: do what you have to do with r.getError();
             Toast.makeText(this, r.getError().getMessage(), Toast.LENGTH_LONG).show();
         }
-
-        //scrollToTop();
     }
 
 

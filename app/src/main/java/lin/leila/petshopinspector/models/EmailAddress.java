@@ -10,15 +10,14 @@ public class EmailAddress {
 
     private HashMap<String,String> emaillist;
 
-
     public static void main(String[] args) {
         new EmailAddress();
 
     }
 
     public EmailAddress() {
-
         emaillist = new HashMap<String, String>();
+        emaillist.put("全台","wlchou@mail.coa.gov.tw");
         emaillist.put("台北市", "tcapo077@mail.gov.taipei");
         emaillist.put("臺北市", "tcapo077@mail.gov.taipei");
         emaillist.put("新北市", "agd2070100@ntpc.gov.tw");
@@ -48,14 +47,9 @@ public class EmailAddress {
         for (String name:emaillist.keySet()) {
             getEmailAddress(name);
         }
-
-
     }
 
     public String getEmailAddress(String name) {
-
         return  emaillist.get(name);
     }
-
-
 }

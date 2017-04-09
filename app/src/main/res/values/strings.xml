@@ -53,4 +53,8 @@
     <string name="privacy_content_p5">• 協助我們開發、交付及改進我們的產品、服務、內容及廣告。</string>
     <string name="privacy_content_p6">• 傳送重要通知，例如有關重大訊息或使用條款或政策修改之通知。</string>
 
+
+
+    <string name="petShopName">店家名稱</string>
+    <string name="petShopAddress">店家住址</string>
 </resources>

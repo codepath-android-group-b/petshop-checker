@@ -5,19 +5,53 @@
     android:orientation="vertical"
     android:weightSum="1">
 
+    <Spinner
+        android:id="@+id/emailSpCity"
+        style="@style/spinner_style"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:entries="@array/citySpinnerItems"
+        android:spinnerMode="dialog" />
     <CheckBox
-        android:id="@+id/showTitle"
+        android:id="@+id/cbNoRegistration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="查無登記資料"
         android:textColor="#000000" />
     <CheckBox
-        android:id="@+id/showTitle2"
+        android:id="@+id/cbWrongAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="地址資訊錯誤"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/petShopName"
+        android:textColor="#80000000" />
+    <EditText
+        android:id="@+id/etPetShopName"
+        android:layout_width="316dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="text"
+        android:textColor="#000000" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/petShopAddress"
+        android:textColor="#80000000" />
+    <EditText
+        android:id="@+id/etPetShopAddress"
+        android:layout_width="316dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="text"
         android:textColor="#000000" />
     <TextView
         android:layout_width="wrap_content"
@@ -25,19 +59,29 @@
         android:layout_marginTop="18dp"
         android:text="其他原因，請註明"
         android:textColor="#80000000" />
+
     <EditText
-        android:id="@+id/askTitle"
+        android:id="@+id/etOtherReason"
         android:layout_width="316dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:inputType="text"
         android:textColor="#000000" />
+
+    <ImageView
+        android:id="@+id/ivPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:layout_marginTop="10dp" />
+
     <CheckBox
-        android:id="@+id/showTitle3"
+        android:id="@+id/cbAskCCForUs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="傳送一份副本給我們"
         android:textColor="#000000" />
-
 </LinearLayout>

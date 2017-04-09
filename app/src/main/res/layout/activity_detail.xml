@@ -84,15 +84,6 @@
             app:fab_icon="@drawable/ic_email"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/pink"
-            fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="add image"
-            app:fab_icon="@drawable/ic_photo" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

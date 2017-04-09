@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PhoneBook {
 
-    private HashMap<String,String> phonelist;
+    private HashMap<String, String> phonelist;
     private List<String> cityList;
 
     public static void main(String[] args) {
@@ -21,6 +21,7 @@ public class PhoneBook {
 
 
         phonelist = new HashMap<String, String>();
+        phonelist.put("全台", "0800231532");
         phonelist.put("台北市", "0287897158");
         phonelist.put("臺北市", "0287897158");
         phonelist.put("新北市", "0229596353");
@@ -48,7 +49,7 @@ public class PhoneBook {
         phonelist.put("澎湖縣", "069212839");
         phonelist.put("金門縣", "082336626");
         phonelist.put("連江縣", "083625348");
-        for (String name:phonelist.keySet()) {
+        for (String name : phonelist.keySet()) {
             getPhoneNumber(name);
         }
 
@@ -57,7 +58,7 @@ public class PhoneBook {
 
     public String getPhoneNumber(String name) {
 
-        return  phonelist.get(name);
+        return phonelist.get(name);
     }
 
 

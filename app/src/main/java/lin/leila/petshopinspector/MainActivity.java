@@ -1,13 +1,14 @@
 package lin.leila.petshopinspector;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,24 +24,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lin.leila.petshopinspector.fragments.CustomerPickImageBaseDialog;
+import lin.leila.petshopinspector.fragments.CustomerPickImageDialog;
+import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
+import lin.leila.petshopinspector.models.PhoneBook;
+import lin.leila.petshopinspector.utils.FileUtils;
+import lin.leila.petshopinspector.utils.IntentUtils;
 import lin.leila.petshopinspector.utils.PetShopUtils;
 
-public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener {
+public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener
+        , ActivityCompat.OnRequestPermissionsResultCallback
+        , CustomerPickImageBaseDialog.OnCancelClickListener, IPickResult {
 
+    public static final String ALL_CITY = "全台";
     private DrawerLayout mDrawerLayout;
-    //FloatingActionButton fab;
     com.getbase.floatingactionbutton.FloatingActionButton phoneAction;
-    com.getbase.floatingactionbutton.FloatingActionButton photoAction;
     com.getbase.floatingactionbutton.FloatingActionButton emailAction;
 
+    private String phoneSelectedCity;
 
     private ViewPager viewPager;
 
@@ -80,7 +98,14 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
         emailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmailDialogMain();
+                photoDialog();
+            }
+        });
+
+        phoneAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phoneDialog();
             }
         });
     }
@@ -196,6 +221,15 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
         startActivity(intent);
     }
 
+    @Override
+    public void onPickResult(PickResult pickResult) {
+        if (pickResult.getError() == null) {
+            emailDialogMain(pickResult);
+        } else {
+            Toast.makeText(this, pickResult.getError().getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
@@ -225,13 +259,14 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
             return mFragmentTitles.get(position);
         }
     }
-    public void findView(){
+
+    public void findView() {
         phoneAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_phone_main);
-        photoAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_photo_main);
         emailAction = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.button_email_main);
     }
 
-    public void EmailDialogMain() {
+    public void emailDialogMain(final PickResult pickResult) {
+
         MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
                 .customView(R.layout.email_selection_fragment, true)
                 .title("檢舉 ")
@@ -241,69 +276,158 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
                     // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        View positive = dialog.getActionButton(DialogAction.POSITIVE);
-                        //passwordInput = (EditText) dialog.getCustomView().findViewById(R.id.password);
-                        CheckBox checkbox = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword);
-                        CheckBox checkbox2 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword2);
-                        CheckBox checkbox3 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword3);
-                        CheckBox checkbox4 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword4);
+                        CheckBox cbNoRegistration = (CheckBox) dialog.getCustomView().findViewById(R.id.cbNoRegistration);
+                        CheckBox cbWrongAddress = (CheckBox) dialog.getCustomView().findViewById(R.id.cbWrongAddress);
+                        EditText etPetShopName = (EditText) dialog.getCustomView().findViewById(R.id.etPetShopName);
+                        EditText etPetShopAddress = (EditText) dialog.getCustomView().findViewById(R.id.etPetShopAddress);
 
-                        String emailtitle = "檢舉 ";
-                        String emailsubject = new String();
-                        //save input
-                        emailsubject = "敬啟者，\r\n";
+                        EditText etOtherReason = (EditText) dialog.getCustomView().findViewById(R.id.etOtherReason);
 
-                        emailsubject = emailsubject + "\r\n該店寵物登記資料如下：\r\n" +
-                                "日期："+ "\r\n盼貴單位能妥善處理，並公布或回覆，謝謝。";
+                        Spinner emailSpCity = (Spinner) dialog.getCustomView().findViewById(R.id.emailSpCity);
+                        String city = (String) emailSpCity.getSelectedItem();
 
-                        String emailaddress = "test@gmail.com";
-                        /*if (emailaddress == null) {
-                            emailaddress = "test@gmail.com";
-                        }*/
+                        CheckBox cbAskCCForUs = (CheckBox) dialog.getCustomView().findViewById(R.id.cbAskCCForUs);
 
-                        String uriText = "mailto:" + emailaddress +
-                                "?subject=" + Uri.encode(emailtitle) +
-                                "&body=" + Uri.encode(emailsubject);
+                        String emailAddress;
+
+                        EmailAddress emailUtils = new EmailAddress();
+
+                        if (TextUtils.isEmpty(city)) {
+                            emailAddress = emailUtils.getEmailAddress(ALL_CITY);
+                        } else {
+                            emailAddress = emailUtils.getEmailAddress(city);
+                        }
+
+                        String emailSubject = genEmailTitle(etPetShopName);
+                        String emailBody = genEmailBody(cbNoRegistration, cbWrongAddress, etPetShopName, etPetShopAddress, etOtherReason);
+
+                        String uriText = "mailto:" + emailAddress +
+                                "?subject=" + Uri.encode(emailSubject) +
+                                "&body=" + Uri.encode(emailBody);
 
                         Uri uri = Uri.parse(uriText);
 
                         Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-                        /* if(photoUri!=null){
-                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));}*/
-                        //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
                         sendIntent.setData(uri);
 
 
-                        // it.setType("image/jpeg");
-                        //sendIntent.putExtra(android.content.Intent.EXTRA_STREAM, photoUri);
-                        //sendIntent.setData(uri);
+                        if (cbAskCCForUs.isChecked()) {
+                            sendIntent.putExtra(Intent.EXTRA_CC, new String[] {"petshopiapp@gmail.com"});
+                        }
 
+                        if (pickResult != null) {
+                            Uri imageUri = null;
+                            if (!FileUtils.isExternalFile(pickResult.getPath())) {
+                                try {
+                                    File file = FileUtils.exportFile(new File(pickResult.getPath()));
+                                    imageUri = Uri.fromFile(file);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                imageUri = pickResult.getUri();
+                            }
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                        }
                         startActivity(Intent.createChooser(sendIntent, "Please attach image/video in email"));
-
                     }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                }).show();
+
+        if (pickResult != null) {
+            ImageView imageView = (ImageView) dialog.getCustomView().findViewById(R.id.ivPhoto);
+            imageView.setImageBitmap(pickResult.getBitmap());
+        }
+    }
+
+    private String genEmailBody(CheckBox cbNoRegistration, CheckBox cbWrongAddress, EditText etPetShopName, EditText etPetShopAddress,EditText etOtherReason) {
+        StringBuilder body = new StringBuilder();
+        body.append("敬啟者，\r\n");
+        body.append("寵物店名:" + etPetShopName.getText() + "\r\n");
+        body.append("地址:" + etPetShopAddress.getText() + "\r\n");
+        body.append("檢舉項目 : \r\n");
+
+        if(cbNoRegistration.isChecked()) {
+            body.append("     " + cbNoRegistration.getText() +"\r\n");
+        }
+
+        if(cbWrongAddress.isChecked()) {
+            body.append("     " + cbWrongAddress.getText() +"\r\n");
+        }
+
+        if(!TextUtils.isEmpty(etOtherReason.getText())) {
+            body.append("     " + etOtherReason.getText() +"\r\n");
+        }
+
+        body.append("盼貴單位能妥善處理，並公布或回覆，謝謝。");
+
+        return body.toString();
+    }
+
+    private String genEmailTitle(EditText etPetShopName) {
+        StringBuilder title = new StringBuilder("檢舉 ");
+        if (!TextUtils.isEmpty(etPetShopName.getText())) {
+            title.append(":");
+            title.append(etPetShopName.getText());
+        }
+        return title.toString();
+    }
+
+    public void photoDialog() {
+
+        CustomerPickImageDialog dialog = CustomerPickImageDialog.build(new PickSetup().setCancelText("下一步"));
+
+        dialog.setOnCancelClickListener(this);
+
+        dialog.show(this);
+    }
+
+    @Override
+    public void onCancelClick() {
+        emailDialogMain(null);
+    }
+
+
+    public void phoneDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
+                .customView(R.layout.phone_selection_fragment, true)
+                .title("檢舉 ")
+                .positiveText("Call")
+                .negativeText("Cancel")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Spinner spCity = (Spinner) dialog.getCustomView().findViewById(R.id.phoneSpCity);
+                        phoneSelectedCity = (String) spCity.getSelectedItem();
+                        callPhoneToAdmin();
+                    }
+                }).show();
+    }
 
-                    }
-                })
-                .showListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                    }
-                })
-                .cancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                    }
-                })
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                    }
-                })
-                .show();
+    public void callPhoneToAdmin() {
+        String phoneNumber;
+        PhoneBook phoneBook = new PhoneBook();
+        if (TextUtils.isEmpty(phoneSelectedCity)) {
+            phoneNumber = phoneBook.getPhoneNumber(ALL_CITY);
+        } else {
+            phoneNumber = phoneBook.getPhoneNumber(phoneSelectedCity);
+        }
+        Intent phoneIntent = IntentUtils.createCallPhoneIntent(this, phoneNumber);
+        if (phoneIntent != null)
+            startActivity(phoneIntent);
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == IntentUtils.PHONE_DIALOG_RESULT) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                callPhoneToAdmin();
+            }
+        } else {
+            return;
+        }
     }
 }
