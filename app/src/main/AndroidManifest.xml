@@ -39,6 +39,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,6 +65,20 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".PrivacyActivity"
+            android:label="@string/title_activity_privacy"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.PSI">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="lin.leila.petshopinspector.MainActivity" />
+            <intent-filter>
+                <action android:name="package.name.PrivacyActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

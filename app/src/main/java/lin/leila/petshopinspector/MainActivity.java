@@ -1,5 +1,6 @@
 package lin.leila.petshopinspector;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
     private ViewPager viewPager;
 
     private Adapter adapter;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        context = this;
 
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -158,12 +160,16 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_data_version:
-                                makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
+                                break;
                             case R.id.nav_home:
+                                viewPager.setCurrentItem(0);
                                 Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_messages:
-                                Toast.makeText(MainActivity.this, "Privacy", Toast.LENGTH_SHORT).show();
+                                Intent msgIntent = new Intent(context, PrivacyActivity.class);
+                                startActivity(msgIntent);
+//                                Toast.makeText(MainActivity.this, "Privacy", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_contact:
                                 Toast.makeText(MainActivity.this, "Contact", Toast.LENGTH_SHORT).show();

@@ -46,4 +46,17 @@
 
     <!-- google map -->
     <integer name="map_camera_zoom">15</integer>
+    <string name="title_activity_privacy">PrivacyActivity</string>
+
+    <!-- privacy -->
+    <string name="privacy_title">隱私權政策</string>
+    <string name="privacy_content_p1">非常感謝您使用PetShop Inspector（以下簡稱本App），為了讓您能夠安心使用本app的各項服務與資訊，特此向您說明本app的隱私權保護政策，以保障您的權益，請您詳閱下列內容：</string>
+    <string name="privacy_content_p2">請注意本APP隱私權政策會不定時變更。我們不會在未經您同意的情況下，削減本《隱私權政策》賦予您的權利，並且會隨時在 本App 登載最新版本的《隱私權政策》，提供您隨時查閱。</string>
+    <string name="privacy_content_p3_title">1. 個人資料之蒐集與目的</string>
+    <string name="privacy_content_p3_sub">在您使用本App相關服務時，軟體系統將依您所要求的服務內容，擷取提供該等服務所必須蒐集之可供辨識個人之資料，詳細擷取資料在您下載本App時業已取得您的同意。倘若您不同意提供上述個人資料，請勿繼續使用本App服務。</string>
+    <string name="privacy_content_p4_title">2. 個人資料之處理及利用</string>
+    <string name="privacy_content_p4_sub">當系統擷取您的個人資料時，供軟體系統使用、處理，用以進行資(通)訊業務。舉例而言，我們會將您的個人資料作為以下之處理及利用：</string>
+    <string name="privacy_content_p5">• 協助我們開發、交付及改進我們的產品、服務、內容及廣告。</string>
+    <string name="privacy_content_p6">• 傳送重要通知，例如有關重大訊息或使用條款或政策修改之通知。</string>
+
 </resources>
