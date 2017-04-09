@@ -60,6 +60,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/content_detail" />
+
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_down"
 
@@ -101,6 +103,5 @@
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-    <include layout="@layout/content_detail" />
 
 </android.support.design.widget.CoordinatorLayout>

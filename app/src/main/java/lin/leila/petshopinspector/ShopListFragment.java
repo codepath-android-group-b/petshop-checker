@@ -293,5 +293,10 @@ public class ShopListFragment extends Fragment {
         petShops.addAll(shops);
         simpleStringRecyclerViewAdapter.notifyDataSetChanged();
     }
+
+    public String getCity() {
+        City city = ((City) spCity.getSelectedItem());
+        return city.getName();
+    }
 }
 

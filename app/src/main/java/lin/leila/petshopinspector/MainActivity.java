@@ -1,11 +1,9 @@
 package lin.leila.petshopinspector;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -24,13 +22,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,14 +99,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
                 if (!TextUtils.isEmpty(query)) {
-                    Fragment fragment = adapter.getItem(0);
 
-                    if (fragment != null && fragment instanceof ShopListFragment) {
-                        ShopListFragment listFrag = (ShopListFragment) fragment;
-                        listFrag.filterShopByShopName(query);
+                    ShopListFragment shopListFragment = getShopListFragment();
 
-                        viewPager.setCurrentItem(0,true);
-
+                    if (shopListFragment != null) {
+                        shopListFragment.filterShopByShopName(query);
+                        viewPager.setCurrentItem(0, true);
                         return true;
                     }
                 }
@@ -125,6 +118,17 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private ShopListFragment getShopListFragment() {
+
+        Fragment fragment = adapter.getItem(0);
+
+        if (fragment != null && fragment instanceof ShopListFragment) {
+            return (ShopListFragment) fragment;
+        } else {
+            return null;
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
