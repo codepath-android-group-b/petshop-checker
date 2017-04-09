@@ -9,20 +9,14 @@
     <string name="checkin">Checkin</string>
 
     <string name="title_app">Pet Shop Inspector</string>
-    <string name="title_activity_maps">Map</string>
-
-    <string name="menu_night_mode">Night mode</string>
-    <string name="menu_night_mode_system">Follow system</string>
-    <string name="menu_night_mode_day">Day (always)</string>
-    <string name="menu_night_mode_night">Night (always)</string>
-    <string name="menu_night_mode_auto">Auto</string>
+    <string name="title_activity_maps">店家地圖</string>
     <string name="title_activity_bottom_nav">BottomNavActivity</string>
-    <string name="title_home">Shop List</string>
+    <string name="title_home">店家清單</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_privacy">Privacy</string>
-    <string name="title_contact">Contact Developers</string>
-    <string name="title_data_version">Data Version</string>
+    <string name="title_privacy">隱私權政策</string>
+    <string name="title_contact">聯絡PSI</string>
+    <string name="title_data_version">店家營業許可上次更新:</string>
 
     <string name="selected_all_cities">全台</string>
     <string name="selected_all_dist">區域</string>

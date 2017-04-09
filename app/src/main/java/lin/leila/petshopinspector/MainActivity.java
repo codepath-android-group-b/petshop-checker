@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,8 +32,6 @@ import java.util.List;
 
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.utils.PetShopUtils;
-
-import static android.widget.Toast.makeText;
 
 public class MainActivity extends AppCompatActivity implements MapFragment.OnMarkerClickListener {
 
@@ -153,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
     private void setupDrawerContent(NavigationView navigationView) {
 
         Menu item = navigationView.getMenu();
+        String strVersion = getResources().getString(R.string.title_data_version)
+                + PetShopUtils.getPetShopDataVerion();
+        item.findItem(R.id.nav_data_version).setTitle(strVersion);
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -160,11 +160,12 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_data_version:
-                                Toast.makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
+//                                Snackbar.make(getCurrentFocus(), "Version : " + PetShopUtils.getPetShopDataVerion(), Snackbar.LENGTH_LONG).show();
+//                                Toast.makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_home:
                                 viewPager.setCurrentItem(0);
-                                Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_messages:
                                 Intent msgIntent = new Intent(context, PrivacyActivity.class);
@@ -172,12 +173,11 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 //                                Toast.makeText(MainActivity.this, "Privacy", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_contact:
-                                Toast.makeText(MainActivity.this, "Contact", Toast.LENGTH_SHORT).show();
+                                Uri uri = Uri.parse("mailto:petshopiapp@gmail.com");
+                                Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                                startActivity(it);
+//                                Toast.makeText(MainActivity.this, "Contact", Toast.LENGTH_SHORT).show();
                                 break;
-                        }
-
-                        if (R.id.nav_data_version == menuItem.getItemId()) {
-                            makeText(MainActivity.this, "Version : " + PetShopUtils.getPetShopDataVerion(), Toast.LENGTH_SHORT).show();
                         }
 
                         menuItem.setChecked(true);

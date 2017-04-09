@@ -10,19 +10,13 @@
             android:id="@+id/nav_messages"
             android:icon="@drawable/ic_warning"
             android:title="@string/title_privacy" />
-    </group>
-
-    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_contact"
-            android:icon="@drawable/ic_forum"
+            android:icon="@drawable/ic_email"
             android:title="@string/title_contact"></item>
-    </group>
-
-    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_data_version"
-            android:icon="@drawable/ic_forum"
+            android:icon="@drawable/ic_update"
             android:title="@string/title_data_version"></item>
     </group>
 
