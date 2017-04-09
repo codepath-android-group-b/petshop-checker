@@ -25,8 +25,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,15 +46,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import lin.leila.petshopinspector.fragments.CustomerPickImageBaseDialog;
+import lin.leila.petshopinspector.fragments.CustomerPickImageDialog;
 import lin.leila.petshopinspector.fragments.WorkaroundMapFragment;
 import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PhoneBook;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static lin.leila.petshopinspector.R.id.imageView;
 
 /**
  * Created by Leila on 2017/3/16.
@@ -67,6 +70,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         LocationListener,
         GoogleMap.OnMapLoadedCallback,
         ActivityCompat.OnRequestPermissionsResultCallback,
+        CustomerPickImageBaseDialog.OnCancelClickListener,
         IPickResult {
 
     public static final String EXTRA_NAME = "shop_name";
@@ -186,7 +190,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         emailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmailDialog();
+                EmailDialog(null);
             }
         });
         if (mapFragment != null) {
@@ -436,6 +440,11 @@ public class ShopDetailActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onCancelClick() {
+        EmailDialog(null);
+    }
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
 
@@ -460,8 +469,9 @@ public class ShopDetailActivity extends AppCompatActivity implements
         }
     }
 
-    public void EmailDialog() {
-        MaterialDialog dialog = new MaterialDialog.Builder(ShopDetailActivity.this)
+    public void EmailDialog(final PickResult pickResult) {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(ShopDetailActivity.this)
                 .customView(R.layout.email_template_fragment, true)
                 .title("檢舉 " + shopDetail.getShopName())
                 .positiveText("Email")
@@ -477,6 +487,10 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         CheckBox checkbox3 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword3);
                         CheckBox checkbox4 = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword4);
                         CheckBox checkbox5 = (CheckBox) dialog.getCustomView().findViewById(R.id.addBCC);
+
+                        ImageView imageView = (ImageView) dialog.getCustomView().findViewById(R.id.imageView);
+
+
 
                         String emailtitle = "檢舉 " + shopDetail.getShopName();
                         String emailsubject = new String();
@@ -523,11 +537,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
                         if (checkbox5.isChecked()) {
                             sendIntent.putExtra(Intent.EXTRA_CC, "petshopiapp@gmail.com");
                         }
-                        if (photoUri != null) {
-                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(photoUri));
+                        if (pickResult != null) {
+                            Log.d("DEBUG" , "123" + pickResult.getPath());
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(pickResult.getPath()));
+                            sendIntent.setData(uri);
                         }
                         //sendIntent.putExtra(Intent.EXTRA_STREAM, photoUri);
-                        sendIntent.setData(uri);
+
 
 
                         // it.setType("image/jpeg");
@@ -558,9 +574,14 @@ public class ShopDetailActivity extends AppCompatActivity implements
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                     }
-                })
-                .show();
+                });
 
+        MaterialDialog dialog = builder.show();
+
+        if(pickResult!=null) {
+            ImageView imageView = (ImageView) dialog.getCustomView().findViewById(R.id.imageView);
+            imageView.setImageBitmap(pickResult.getBitmap());
+        }
     }
 
     public void PhoneDialog() {
@@ -601,7 +622,13 @@ public class ShopDetailActivity extends AppCompatActivity implements
 //                })
 //                .show(this);
 
-        PickImageDialog.build(new PickSetup()).show(this);
+
+
+        CustomerPickImageDialog dialog = CustomerPickImageDialog.build(new PickSetup());
+
+        dialog.setOnCancelClickListener(this);
+
+        dialog.show(this);
 
         /*
 
@@ -647,6 +674,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
             Toast.makeText(this, photoUri, Toast.LENGTH_LONG).show();
             //If you want the Bitmap.
             //getImageView().setImageBitmap(r.getBitmap());
+
+            EmailDialog(r);
 
             //r.getPath();
         } else {

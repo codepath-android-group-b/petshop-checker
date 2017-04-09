@@ -46,6 +46,16 @@
         android:layout_marginTop="4dp"
         android:inputType="text"
         android:textColor="#000000" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:layout_marginTop="10dp" />
+
     <CheckBox
         android:id="@+id/addBCC"
         android:layout_width="match_parent"
