@@ -15,6 +15,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
+        android:clickable="false"
         android:fitsSystemWindows="true"
         android:theme="@style/Theme.PSI">
 
@@ -47,7 +48,7 @@
 
             <fragment
                 android:id="@+id/map"
-                class="com.google.android.gms.maps.SupportMapFragment"
+                class="lin.leila.petshopinspector.fragments.WorkaroundMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"

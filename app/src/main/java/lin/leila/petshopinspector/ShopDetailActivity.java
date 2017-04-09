@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import lin.leila.petshopinspector.fragments.WorkaroundMapFragment;
 import lin.leila.petshopinspector.models.EmailAddress;
 import lin.leila.petshopinspector.models.PetShop;
 import lin.leila.petshopinspector.models.PhoneBook;
@@ -242,6 +244,18 @@ public class ShopDetailActivity extends AppCompatActivity implements
         if (map != null) {
             // Map is ready
 //            Snackbar.make(coordinatorLayout, "Map Fragment was loaded properly!", Snackbar.LENGTH_LONG).show();
+
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            map.getUiSettings().setZoomControlsEnabled(true);
+            final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar); //parent scrollview in xml, give your scrollview id value
+
+            ((WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .setListener(new WorkaroundMapFragment.OnTouchListener() {
+                        @Override
+                        public void onTouch() {
+                            collapsingToolbarLayout.requestDisallowInterceptTouchEvent(true);
+                        }
+                    });
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
 //            map.getUiSettings().setScrollGesturesEnabled(false);
