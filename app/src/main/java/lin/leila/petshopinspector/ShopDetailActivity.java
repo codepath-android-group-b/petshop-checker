@@ -554,7 +554,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     }
 
     public void photoDialog() {
-        CustomerPickImageDialog dialog = CustomerPickImageDialog.build(new PickSetup());
+        CustomerPickImageDialog dialog = CustomerPickImageDialog.build(new PickSetup().setCancelText("下一步"));
 
         dialog.setOnCancelClickListener(this);
 
