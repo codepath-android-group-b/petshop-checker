@@ -128,9 +128,9 @@ public class MapFragment extends Fragment implements
     public void onMapLoaded() {
         List<PetShop> result;
         if (glocation.latitude > 0) {
-            result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 10);
+            result = petShopDb.getPetShopOrderByDistance(glocation.latitude, glocation.longitude, 20);
         } else {
-            result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 10);
+            result = petShopDb.getPetShopOrderByDistance(25.0049394, 121.5427091, 20);
         }
 
         AddPetShopMarkerTask task = new AddPetShopMarkerTask(getActivity(), map);
