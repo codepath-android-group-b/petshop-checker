@@ -81,7 +81,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 50000; /* 5 secs */
+    private long FASTEST_INTERVAL = 100000; /* 100 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -191,7 +191,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
                 }
             });
         } else {
-            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
 
         ifItemExisted(shopDetail);
@@ -236,6 +236,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
         if (map != null) {
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             map.getUiSettings().setZoomControlsEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(false);
             final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar); //parent scrollview in xml, give your scrollview id value
 
             ((WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
@@ -248,7 +249,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
             ShopDetailActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             map.setOnMapLoadedCallback(this);
         } else {
-            Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(coordinatorLayout, "Error - Map was null!!", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -354,16 +355,15 @@ public class ShopDetailActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            // Snackbar.make(mapFragment.getView(),
-            //         "GPS location was found!", Snackbar.LENGTH_LONG).show();
-            Log.d("DEBUG-GPS", "GPS location was found!");
+//             Snackbar.make(coordinatorLayout,
+//                     "GPS定位完成", Snackbar.LENGTH_LONG).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             map.animateCamera(cameraUpdate);
         } else {
-            Log.d("DEBUG-GPS", "Current location was null, enable GPS on emulator!");
-//            Snackbar.make(mapFragment.getView(),
-//                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
+//            Log.d("DEBUG-GPS", "Current location was null, enable GPS on emulator!");
+//            Snackbar.make(coordinatorLayout,
+//                    "無GPS定位", Snackbar.LENGTH_LONG).show();
         }
         startLocationUpdates();
     }
@@ -382,7 +382,8 @@ public class ShopDetailActivity extends AppCompatActivity implements
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG", msg);
     }
 
     @Override
@@ -419,7 +420,7 @@ public class ShopDetailActivity extends AppCompatActivity implements
             }
         } else {
             Snackbar.make(coordinatorLayout,
-                    "Sorry. Location services not available to you", Snackbar.LENGTH_LONG).show();
+                    "地圖服務存取使用量已達上限，無法使用", Snackbar.LENGTH_LONG).show();
         }
     }
 

@@ -69,16 +69,16 @@
         android:layout_height="0dp"
         android:layout_gravity="bottom|end"
         android:elevation="1dp"
-        fab:fab_addButtonColorNormal="@color/pink"
-        fab:fab_addButtonColorPressed="@color/pink_pressed"
-        fab:fab_addButtonPlusIconColor="@color/half_black"
+        fab:fab_addButtonColorNormal="@color/colorOrangeDark"
+        fab:fab_addButtonColorPressed="@color/colorOrangeLight"
+        fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_labelStyle="@style/menu_labels_style">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/pink"
+            fab:fab_colorNormal="@color/colorOrangeDark"
             fab:fab_colorPressed="@color/white_pressed"
             fab:fab_title="email"
             app:fab_icon="@drawable/ic_email"/>
@@ -87,7 +87,7 @@
             android:id="@+id/button_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/pink"
+            fab:fab_colorNormal="@color/colorOrangeDark"
             fab:fab_colorPressed="@color/white_pressed"
             fab:fab_title="call local"
             app:fab_icon="@drawable/ic_phone" />

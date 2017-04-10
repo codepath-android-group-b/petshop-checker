@@ -57,7 +57,7 @@ public class MapFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 300000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 100000; /* 5 secs */
+    private long FASTEST_INTERVAL = 100000; /* 100 secs */
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -242,13 +242,13 @@ public class MapFragment extends Fragment implements
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             Snackbar.make(getActivity().getCurrentFocus(),
-                    "GPS location was found!", Snackbar.LENGTH_LONG).show();
+                    "GPS定位完成", Snackbar.LENGTH_LONG).show();
             glocation = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(glocation, 15);
             map.animateCamera(cameraUpdate);
         } else {
             Snackbar.make(getActivity().getCurrentFocus(),
-                    "Current location was null, enable GPS on emulator!", Snackbar.LENGTH_LONG).show();
+                    "無GPS定位", Snackbar.LENGTH_LONG).show();
         }
         startLocationUpdates();
     }
@@ -329,7 +329,7 @@ public class MapFragment extends Fragment implements
             }
         } else {
             Snackbar.make(getActivity().getCurrentFocus(),
-                    "Sorry. Location services not available to you", Snackbar.LENGTH_LONG).show();
+                    "地圖服務存取使用量已達上限，無法使用", Snackbar.LENGTH_LONG).show();
         }
     }
 

@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ShopListFragment(), "Shop List");
-        adapter.addFragment(new MapFragment(), "MAP");
+        adapter.addFragment(new ShopListFragment(), "店家清單");
+        adapter.addFragment(new MapFragment(), "從地圖上瀏覽店家");
         viewPager.setAdapter(adapter);
     }
 
@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
                 .customView(R.layout.email_selection_fragment, true)
                 .title("檢舉 ")
                 .positiveText("Email")
-                .negativeText("Cancel")
+                .negativeText("取消")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
                     @Override
@@ -391,8 +391,8 @@ public class MainActivity extends AppCompatActivity implements MapFragment.OnMar
         MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
                 .customView(R.layout.phone_selection_fragment, true)
                 .title("檢舉 ")
-                .positiveText("Call")
-                .negativeText("Cancel")
+                .positiveText("撥打檢舉專線")
+                .negativeText("取消")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     // positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
                     @Override
