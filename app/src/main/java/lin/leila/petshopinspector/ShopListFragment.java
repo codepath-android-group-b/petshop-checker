@@ -108,7 +108,7 @@ public class ShopListFragment extends Fragment {
                 changeDistOptions(city);
 
                 if (spZone.getSelectedItemPosition() == 0) {
-                    District dist = districts.get(position);
+                    District dist = (District) spZone.getSelectedItem();
                     String service = (String) spItem.getSelectedItem();
 
                     filterShopByCondition(city, dist, service);
